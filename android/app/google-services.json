@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1060165579239",
+    "project_id": "elemam-79dd8",
+    "storage_bucket": "elemam-79dd8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060165579239:android:803c25493da4b5085c8d42",
+        "android_client_info": {
+          "package_name": "com.anmka.elemam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyf-gdWvjUEtCO_FfnH2SVqSJXRZPkJJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
