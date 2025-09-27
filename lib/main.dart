@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webinar/app/pages/authentication_page/login_page.dart';
@@ -96,6 +96,22 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // print('message--');
 }
 
+Future<void> _initializeScreenProtector() async {
+  if (!kIsWeb) {
+    try {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        debugPrint('🛡️ Enabling Android screen protection...');
+        await ScreenProtector.protectDataLeakageOn();
+      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+        debugPrint('🛡️ Enabling iOS screenshot prevention...');
+        await ScreenProtector.preventScreenshotOn();
+      }
+    } catch (e) {
+      debugPrint('❌ ScreenProtector init error: $e');
+    }
+  }
+}
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
@@ -109,11 +125,8 @@ void main() async {
   await Hive.openBox("themeBox");
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   isDarkMode = prefs.getBool(Constants.theme) ?? false;
-  // implemented using window manager
-  if (Platform.isAndroid) {
-    // implemented using window manager
-    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
-  }
+  // Initialize screen protection
+  await _initializeScreenProtector();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
@@ -182,10 +195,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Future<void> secureScreen() async {
-    if (Platform.isAndroid) {
-      // implemented using window manager
-      await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
-    }
+    await _initializeScreenProtector();
   }
 
   @override

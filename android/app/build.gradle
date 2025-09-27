@@ -34,7 +34,6 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.anmka.elemam"
     compileSdk 34
-    ndkVersion "26.1.10909125"
 
 
     compileOptions {

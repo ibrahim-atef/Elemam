@@ -47,16 +47,26 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController retypePasswordController = TextEditingController();
   FocusNode retypePasswordNode = FocusNode();
 
+  // New required fields
+  TextEditingController nameController = TextEditingController();
+  FocusNode nameNode = FocusNode();
+  TextEditingController gradeController = TextEditingController();
+  FocusNode gradeNode = FocusNode();
+  TextEditingController governorateController = TextEditingController();
+  FocusNode governorateNode = FocusNode();
+  TextEditingController whatsappController = TextEditingController();
+  FocusNode whatsappNode = FocusNode();
+
   bool isEmptyInputs=true;
   bool isPhoneNumber=true;
   bool isSendingData=false;
 
 
   CountryCode countryCode = CountryCode(
-    code: "US",
-    dialCode: "+1",
-    flagUri: "${AppAssets.flags}en.png",
-    name: "United States"
+    code: "EG",
+    dialCode: "+20",
+    flagUri: "${AppAssets.flags}eg.png",
+    name: "Egypt"
   );
 
   // user
@@ -69,6 +79,22 @@ class _RegisterPageState extends State<RegisterPage> {
   RegisterConfigModel? registerConfig;
 
   List<dynamic> selectRolesDuringRegistration = [];
+
+  void _checkInputs() {
+    bool hasBasicInputs = (mailController.text.trim().isNotEmpty || phoneController.text.trim().isNotEmpty) && 
+                         passwordController.text.trim().isNotEmpty && 
+                         retypePasswordController.text.trim().isNotEmpty &&
+                         nameController.text.trim().isNotEmpty &&
+                         gradeController.text.trim().isNotEmpty &&
+                         governorateController.text.trim().isNotEmpty &&
+                         whatsappController.text.trim().isNotEmpty;
+    
+    // Directly set the state based on validation
+    if(isEmptyInputs == hasBasicInputs){
+      isEmptyInputs = !hasBasicInputs;
+      setState(() {});
+    }
+  }
 
   @override
   void initState() {
@@ -88,59 +114,35 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     mailController.addListener(() {
-      if( (mailController.text.trim().isNotEmpty || phoneController.text.trim().isNotEmpty) && passwordController.text.trim().isNotEmpty && retypePasswordController.text.trim().isNotEmpty){
-        if(isEmptyInputs){
-          isEmptyInputs = false;
-          setState(() {});
-        }
-      }else{
-        if(!isEmptyInputs){
-          isEmptyInputs = true;
-          setState(() {});
-        }
-      }
+      _checkInputs();
     });
 
     phoneController.addListener(() {
-      if( (mailController.text.trim().isNotEmpty || phoneController.text.trim().isNotEmpty) && passwordController.text.trim().isNotEmpty && retypePasswordController.text.trim().isNotEmpty){
-        if(isEmptyInputs){
-          isEmptyInputs = false;
-          setState(() {});
-        }
-      }else{
-        if(!isEmptyInputs){
-          isEmptyInputs = true;
-          setState(() {});
-        }
-      }
+      _checkInputs();
     });
 
     passwordController.addListener(() {
-      if( (mailController.text.trim().isNotEmpty || phoneController.text.trim().isNotEmpty) && passwordController.text.trim().isNotEmpty && retypePasswordController.text.trim().isNotEmpty){
-        if(isEmptyInputs){
-          isEmptyInputs = false;
-          setState(() {});
-        }
-      }else{
-        if(!isEmptyInputs){
-          isEmptyInputs = true;
-          setState(() {});
-        }
-      }
+      _checkInputs();
     });
 
     retypePasswordController.addListener(() {
-      if( (mailController.text.trim().isNotEmpty || phoneController.text.trim().isNotEmpty) && passwordController.text.trim().isNotEmpty && retypePasswordController.text.trim().isNotEmpty){
-        if(isEmptyInputs){
-          isEmptyInputs = false;
-          setState(() {});
-        }
-      }else{
-        if(!isEmptyInputs){
-          isEmptyInputs = true;
-          setState(() {});
-        }
-      }
+      _checkInputs();
+    });
+
+    nameController.addListener(() {
+      _checkInputs();
+    });
+
+    gradeController.addListener(() {
+      _checkInputs();
+    });
+
+    governorateController.addListener(() {
+      _checkInputs();
+    });
+
+    whatsappController.addListener(() {
+      _checkInputs();
     });
     
     getAccountTypeFileds();
@@ -381,10 +383,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   isPhoneNumber = false;
                                 });
                               }),
-      
-                              // phone
-                              // AuthWidget.accountTypeWidget(appText.phone, otherRegisterMethod ?? '', 'phone', (){
 
+                              //  AuthWidget.accountTypeWidget(appText.phone, otherRegisterMethod ?? '', 'phone', (){
+                              //
                               //   setState(() {
                               //     registerConfig?.registerMethod = 'mobile';
                               //     otherRegisterMethod = 'phone';
@@ -449,17 +450,36 @@ class _RegisterPageState extends State<RegisterPage> {
                       input(passwordController, passwordNode, appText.password, iconPathLeft: AppAssets.passwordSvg,leftIconSize: 14,isPassword: true),
       
       Text(
-                'ملاحظة: يجب أن تتكون كلمة المرور من أحرف كبيرة وصغيرة، أرقام، ورموز خاصة.',
+                'ملاحظة: كلمة المرور يجب أن تحتوي على أحرف وأرقام (مثال: test1234)',
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.orange,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
                       space(16),
                       
                       input(retypePasswordController, retypePasswordNode, appText.retypePassword, iconPathLeft: AppAssets.passwordSvg,leftIconSize: 14,isPassword: true),
       
+                      space(16),
+                      
+                      // Name field
+                      input(nameController, nameNode, 'الاسم الكامل', iconPathLeft: AppAssets.mailSvg, leftIconSize: 14),
+                      
+                      space(16),
+                      
+                      // Grade/Year field
+                      input(gradeController, gradeNode, 'الفرقة أو السنة', iconPathLeft: AppAssets.mailSvg, leftIconSize: 14),
+                      
+                      space(16),
+                      
+                      // Governorate field
+                      input(governorateController, governorateNode, 'محافظة الكلية', iconPathLeft: AppAssets.mailSvg, leftIconSize: 14),
+                      
+                      space(16),
+                      
+                      // WhatsApp field
+                      input(whatsappController, whatsappNode, 'رقم الواتساب', iconPathLeft: AppAssets.mailSvg, leftIconSize: 14),
       
                       isLoadingAccountType
                     ? loading()
@@ -476,9 +496,24 @@ class _RegisterPageState extends State<RegisterPage> {
       
                       Center(
                         child: button(
-                          onTap: () async {
-                            
-                            if(!isEmptyInputs){
+                          onTap: isEmptyInputs ? () {} : () async {
+                            // Validate required fields
+                              if(nameController.text.trim().isEmpty){
+                                showSnackBar(ErrorEnum.alert, 'يرجى إدخال الاسم الكامل');
+                                return;
+                              }
+                              if(gradeController.text.trim().isEmpty){
+                                showSnackBar(ErrorEnum.alert, 'يرجى إدخال الفرقة أو السنة');
+                                return;
+                              }
+                              if(governorateController.text.trim().isEmpty){
+                                showSnackBar(ErrorEnum.alert, 'يرجى إدخال محافظة الكلية');
+                                return;
+                              }
+                              if(whatsappController.text.trim().isEmpty){
+                                showSnackBar(ErrorEnum.alert, 'يرجى إدخال رقم الواتساب');
+                                return;
+                              }
       
                               if(registerConfig?.formFields?.fields != null){
                                 for (var i = 0; i < (registerConfig?.formFields?.fields?.length ?? 0); i++) {
@@ -562,9 +597,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                   isSendingData = false;
                                 });
                               }
-                      
-                            }
-      
                           }, 
                           width: getSize().width, 
                           height: 52, 

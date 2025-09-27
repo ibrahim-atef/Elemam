@@ -275,14 +275,14 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                               }),
       
-                              // email
-                              AuthWidget.accountTypeWidget(appText.phone, otherRegisterMethod ?? '', 'phone', (){
-                                setState(() {
-                                  otherRegisterMethod = 'phone';
-                                  isPhoneNumber = true;
-                                  mailController.clear();
-                                });
-                              }),
+                              // // email
+                              // AuthWidget.accountTypeWidget(appText.phone, otherRegisterMethod ?? '', 'phone', (){
+                              //   setState(() {
+                              //     otherRegisterMethod = 'phone';
+                              //     isPhoneNumber = true;
+                              //     mailController.clear();
+                              //   });
+                              // }),
       
                             ],
                           )

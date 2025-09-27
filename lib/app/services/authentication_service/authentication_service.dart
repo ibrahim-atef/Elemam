@@ -109,8 +109,8 @@ class AuthenticationService{
 
       Map body = {
         "register_method": registerMethod,
-        "country_code": "",
-        "mobile": "",
+        "country_code": "+1",
+        "mobile": "0000000000",
         'email': email,
         'password': password,
         'password_confirmation': repeatPassword
@@ -165,6 +165,7 @@ class AuthenticationService{
         "register_method": registerMethod,
         "country_code": countryCode,
         'mobile': mobile,
+        'email': 'temp@example.com', // Add required email field for phone registration
         'password': password,
         'password_confirmation': repeatPassword,
       };
