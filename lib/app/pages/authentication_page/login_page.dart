@@ -166,45 +166,45 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
 
-                        socialWidget(AppAssets.googleSvg, () async {
-                          final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-                          final GoogleSignInAuthentication gAuth = await gUser!.authentication;
-                  
-                  
-                           
-
-
-                          if(gUser != null){
-                   
-                              print("IS SENDING!!!!!!!!!!!!!!!");
-                              print("User ID: ${gUser.id}");  // Debugging
-                            setState(() {
-                              isSendingData = true;
-                            });
-                  
-                            try{
-                              bool res = await AuthenticationService.google(
-                                gUser.email,
-                                gUser.id ?? '',
-                                gUser.displayName ?? ''
-                              );
-                  
-                              if(res){
-                                await FirebaseMessaging.instance.deleteToken();
-                  
-                                nextRoute(MainPage.pageName,isClearBackRoutes: true);
-                              }
-                            }catch(_){}
-                  
-                            setState(() {
-                              isSendingData = false;
-                            });
-                  
-                  
-                          }else{
-                            print("NOT SENDING!!!!!!!!!!!!!!!");
-                          }
-                        }),
+                        // socialWidget(AppAssets.googleSvg, () async {
+                        //   final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+                        //   final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+                        //
+                        //
+                        //
+                        //
+                        //
+                        //   if(gUser != null){
+                        //
+                        //       print("IS SENDING!!!!!!!!!!!!!!!");
+                        //       print("User ID: ${gUser.id}");  // Debugging
+                        //     setState(() {
+                        //       isSendingData = true;
+                        //     });
+                        //
+                        //     try{
+                        //       bool res = await AuthenticationService.google(
+                        //         gUser.email,
+                        //         gUser.id ?? '',
+                        //         gUser.displayName ?? ''
+                        //       );
+                        //
+                        //       if(res){
+                        //         await FirebaseMessaging.instance.deleteToken();
+                        //
+                        //         nextRoute(MainPage.pageName,isClearBackRoutes: true);
+                        //       }
+                        //     }catch(_){}
+                        //
+                        //     setState(() {
+                        //       isSendingData = false;
+                        //     });
+                        //
+                        //
+                        //   }else{
+                        //     print("NOT SENDING!!!!!!!!!!!!!!!");
+                        //   }
+                        // }),
                   
                         space(0,width: 20),
                     

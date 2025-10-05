@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:uni_links/uni_links.dart';
+// import 'package:app_links/app_links.dart';  // Temporarily disabled
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webinar/app/models/saas_package_model.dart';
 import 'package:webinar/app/pages/main_page/home_page/payment_status_page/payment_status_page.dart';
@@ -44,6 +44,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> with SingleTickerPr
   bool isLoadingSaasPackage = false;
 
   late StreamSubscription _sub;
+  // final _appLinks = AppLinks();  // Temporarily disabled
 
 
   @override
@@ -79,25 +80,26 @@ class _SubscriptionPageState extends State<SubscriptionPage> with SingleTickerPr
   }
 
   Future<void> initUniLinks() async {
+    // Deep linking temporarily disabled for build
+    // _sub = _appLinks.uriLinkStream.listen((Uri uri) {
+    //   final link = uri.toString();
+    //   if(link != null){
+    //     
+    //     if(link == '${Constants.scheme}://payment-success'){
+    //       getData();
+    //       nextRoute(PaymentStatusPage.pageName, arguments: 'success');
+    //     }else if(link == '${Constants.scheme}://payment-failed'){
+    //       nextRoute(PaymentStatusPage.pageName, arguments: 'failed');
+    //     }
 
-    _sub = linkStream.listen((String? link) {
-      if(link != null){
-        
-        if(link == '${Constants.scheme}://payment-success'){
-          getData();
-          nextRoute(PaymentStatusPage.pageName, arguments: 'success');
-        }else if(link == '${Constants.scheme}://payment-failed'){
-          nextRoute(PaymentStatusPage.pageName, arguments: 'failed');
-        }
-
-      }
-    }, onError: (err) {});
+    //   }
+    // }, onError: (err) {});
     
   }
 
   @override
   void dispose() {
-    _sub.cancel();
+    // _sub.cancel();  // Temporarily disabled
     super.dispose();
   }
 

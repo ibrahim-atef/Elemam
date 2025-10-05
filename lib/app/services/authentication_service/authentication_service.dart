@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 import 'package:webinar/app/models/register_config_model.dart';
 import 'package:webinar/common/data/app_data.dart';
 import 'package:webinar/common/enums/error_enum.dart';
@@ -9,6 +10,19 @@ import 'package:webinar/common/utils/http_handler.dart';
 import 'package:http/http.dart';
 
 class AuthenticationService{
+
+  // Generate random 10-digit mobile number
+  static String _generateRandomMobile() {
+    final random = math.Random();
+    final mobileNumber = StringBuffer();
+    
+    // Generate 10 random digits
+    for (int i = 0; i < 10; i++) {
+      mobileNumber.write(random.nextInt(10));
+    }
+    
+    return mobileNumber.toString();
+  }
 
   static Future google(String email,String token, String name)async{
     try{
@@ -109,8 +123,8 @@ class AuthenticationService{
 
       Map body = {
         "register_method": registerMethod,
-        "country_code": "+1",
-        "mobile": "0000000000",
+        "country_code": "+20",
+        'mobile': _generateRandomMobile(),
         'email': email,
         'password': password,
         'password_confirmation': repeatPassword

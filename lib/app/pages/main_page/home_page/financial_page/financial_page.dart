@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:uni_links/uni_links.dart';
+// import 'package:app_links/app_links.dart';  // Temporarily disabled
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webinar/app/models/offline_payment_model.dart';
 import 'package:webinar/app/models/payout_model.dart';
@@ -44,6 +44,7 @@ class _FinancialPageState extends State<FinancialPage>  with SingleTickerProvide
   bool isLoadingCharge = false;
 
   late StreamSubscription _sub;
+  // final _appLinks = AppLinks();  // Temporarily disabled
 
   @override
   void initState() {
@@ -67,25 +68,26 @@ class _FinancialPageState extends State<FinancialPage>  with SingleTickerProvide
   } 
 
   Future<void> initUniLinks() async {
-    
-    _sub = linkStream.listen((String? link) {
-      if(link != null){
-        
-        if(link == 'academyapp://payment-success'){
-          getSummaryData();
-          nextRoute(PaymentStatusPage.pageName, arguments: 'success');
-        }else if(link == 'academyapp://payment-failed'){
-          nextRoute(PaymentStatusPage.pageName, arguments: 'failed');
-        }
+    // Deep linking temporarily disabled for build
+    // _sub = _appLinks.uriLinkStream.listen((Uri uri) {
+    //   final link = uri.toString();
+    //   if(link != null){
+    //     
+    //     if(link == 'academyapp://payment-success'){
+    //       getSummaryData();
+    //       nextRoute(PaymentStatusPage.pageName, arguments: 'success');
+    //     }else if(link == 'academyapp://payment-failed'){
+    //       nextRoute(PaymentStatusPage.pageName, arguments: 'failed');
+    //     }
 
-      }
-    }, onError: (err) {});
+    //   }
+    // }, onError: (err) {});
     
   }
 
   @override
   void dispose() {
-    _sub.cancel();
+    // _sub.cancel();  // Temporarily disabled
     super.dispose();
   }
 
