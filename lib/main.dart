@@ -29,8 +29,8 @@ import 'package:webinar/common/data/app_language.dart';
 import 'package:webinar/common/database/model/course_model_db.dart';
 import 'package:webinar/common/utils/app_text.dart';
 import 'package:webinar/common/utils/constants.dart';
-import 'package:webinar/config/colors.dart';
-import 'package:webinar/config/notification.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/notification.dart';
 import 'app/pages/authentication_page/forget_password_page.dart';
 import 'app/pages/authentication_page/register_page.dart';
 import 'app/pages/authentication_page/verify_code_page.dart';
@@ -117,7 +117,7 @@ void main() async {
 
   // debugRepaintRainbowEnabled = true;
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
   ));
 
@@ -157,7 +157,7 @@ void main() async {
   });
 
   FirebaseMessaging.instance.getToken().then((value) {
-    print('token : ${value}');
+    print('token : $value');
   });
 
   // SystemChrome.setPreferredOrientations([

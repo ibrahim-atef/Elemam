@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webinar/common/utils/color_utils.dart';
-import 'package:webinar/config/colors.dart';
+import 'package:webinar/common/config/colors.dart';
 
 class CategoryModel {
   int? id;
@@ -9,15 +9,15 @@ class CategoryModel {
   String? icon;
   List<CategoryModel>? subCategories;
   int? webinarsCount;
-  bool isOpen=false;
+  bool isOpen = false;
 
   CategoryModel(
       {this.id,
-        this.title,
-        this.color,
-        this.icon,
-        this.subCategories,
-        this.webinarsCount});
+      this.title,
+      this.color,
+      this.icon,
+      this.subCategories,
+      this.webinarsCount});
 
   CategoryModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -40,8 +40,7 @@ class CategoryModel {
     data['color'] = color;
     data['icon'] = icon;
     if (subCategories != null) {
-      data['sub_categories'] =
-          subCategories!.map((v) => v.toJson()).toList();
+      data['sub_categories'] = subCategories!.map((v) => v.toJson()).toList();
     }
     data['webinars_count'] = webinarsCount;
     return data;

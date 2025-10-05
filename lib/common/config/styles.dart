@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webinar/app/providers/theme_provider.dart';
 import 'package:webinar/common/data/app_language.dart';
-import 'package:webinar/config/colors.dart';
+import 'package:webinar/common/config/colors.dart';
 import 'package:webinar/locator.dart';
 
 TextStyle style48Bold() {

@@ -11,7 +11,7 @@ import 'package:webinar/common/components.dart';
 import 'package:webinar/common/common.dart';
 import 'package:webinar/common/shimmer_component.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/assets.dart';
+import 'package:webinar/common/config/assets.dart';
 import 'package:webinar/locator.dart';
 
 import '../../../../common/utils/object_instance.dart';

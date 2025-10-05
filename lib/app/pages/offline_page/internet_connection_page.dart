@@ -5,9 +5,9 @@ import 'package:webinar/app/pages/offline_page/offline_list_course_page.dart';
 import 'package:webinar/common/common.dart';
 import 'package:webinar/common/components.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/assets.dart';
-import 'package:webinar/config/colors.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 
 import '../introduction_page/custom_splash_page.dart';
 
@@ -25,11 +25,10 @@ class _InternetConnectionPageState extends State<InternetConnectionPage> {
     return Scaffold(
       body: Column(
         children: [
-
-          space(0,width: getSize().width),
+          space(0, width: getSize().width),
 
           const Spacer(),
-          
+
           SvgPicture.asset(AppAssets.notFoundEmptyStateSvg),
 
           Text(
@@ -47,49 +46,39 @@ class _InternetConnectionPageState extends State<InternetConnectionPage> {
           space(20),
 
           button(
-            onTap: () async {
-              nextRoute(SplashPage.pageName, isClearBackRoutes: true);
-            },
-            width: getSize().width * .55, 
-            height: 52, 
-            text: appText.retry, 
-            bgColor: mainColor(),
-            textColor: Colors.white
-          ),
+              onTap: () async {
+                nextRoute(SplashPage.pageName, isClearBackRoutes: true);
+              },
+              width: getSize().width * .55,
+              height: 52,
+              text: appText.retry,
+              bgColor: mainColor(),
+              textColor: Colors.white),
 
           const Spacer(),
 
           // my courses
           Container(
             width: getSize().width,
-            padding: const EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 20,
-              bottom: 30
-            ),
-          
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 30),
             decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                boxShadow(Colors.black.withOpacity(.1),blur: 15,y: -3)
-              ],
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(30))
-            ),
+                color: Colors.white,
+                boxShadow: [
+                  boxShadow(Colors.black.withOpacity(.1), blur: 15, y: -3)
+                ],
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(30))),
             child: button(
-              onTap: () async {
-                nextRoute(OfflineListCoursePage.pageName);
-              },
-              width: getSize().width, 
-              height: 52, 
-              text: appText.myCourses, 
-              bgColor: mainColor(),
-              textColor: Colors.white
-            ),
+                onTap: () async {
+                  nextRoute(OfflineListCoursePage.pageName);
+                },
+                width: getSize().width,
+                height: 52,
+                text: appText.myCourses,
+                bgColor: mainColor(),
+                textColor: Colors.white),
           ),
-
-
-
         ],
       ),
     );

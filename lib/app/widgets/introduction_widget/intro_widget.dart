@@ -6,32 +6,25 @@ import 'package:webinar/app/pages/main_page/main_page.dart';
 import 'package:webinar/common/components.dart';
 import 'package:webinar/common/common.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/styles.dart';
 
-import '../../../config/colors.dart';
+import 'package:webinar/common/config/colors.dart';
 
-class IntroWidget{
-
-  static Widget item(String path,String title, String desc,{int page=1}){
+class IntroWidget {
+  static Widget item(String path, String title, String desc, {int page = 1}) {
     return Padding(
       padding: padding(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-
           space(getSize().height * .2),
-          
           Lottie.asset(path, repeat: true, width: getSize().width * .6),
-    
           space(20),
-    
           Text(
             title,
             style: style24Bold(),
           ),
-    
           space(12),
-          
           Padding(
             padding: padding(horizontal: 40),
             child: Text(
@@ -40,66 +33,57 @@ class IntroWidget{
               textAlign: TextAlign.center,
             ),
           ),
-
-
-          if(page == 3)...{
-
+          if (page == 3) ...{
             space(getSize().height * .1),
-            
             button(
-              onTap: (){
-                nextRoute(MainPage.pageName,isClearBackRoutes: true);
-              }, 
-              width: getSize().width * .4, 
-              height: 52, 
-              text: appText.getStart,
-              bgColor: mainColor(),
-              textColor: Colors.white, 
-              borderColor: Colors.transparent,
-              boxShadow: boxShadow(mainColor().withOpacity(.3)),
-              raduis: 15
-            )
-          }else if(page == 4)...{ 
+                onTap: () {
+                  nextRoute(MainPage.pageName, isClearBackRoutes: true);
+                },
+                width: getSize().width * .4,
+                height: 52,
+                text: appText.getStart,
+                bgColor: mainColor(),
+                textColor: Colors.white,
+                borderColor: Colors.transparent,
+                boxShadow: boxShadow(mainColor().withOpacity(.3)),
+                raduis: 15)
+          } else if (page == 4) ...{
             space(getSize().height * .1),
-            
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: button(
-                    onTap: (){
-                      nextRoute(LoginPage.pageName,isClearBackRoutes: true);
-                    }, 
-                    width: getSize().width, 
-                    height: 52, 
-                    text: appText.login,
-                    bgColor: mainColor(),
-                    textColor: Colors.white, 
-                    borderColor: Colors.transparent,
-                    boxShadow: boxShadow(mainColor().withOpacity(.3)),
-                    raduis: 15
-                  ),
+                      onTap: () {
+                        nextRoute(LoginPage.pageName, isClearBackRoutes: true);
+                      },
+                      width: getSize().width,
+                      height: 52,
+                      text: appText.login,
+                      bgColor: mainColor(),
+                      textColor: Colors.white,
+                      borderColor: Colors.transparent,
+                      boxShadow: boxShadow(mainColor().withOpacity(.3)),
+                      raduis: 15),
                 ),
-                
-                space(0,width: 20),
-
+                space(0, width: 20),
                 Expanded(
                   child: button(
-                    onTap: (){
-                      nextRoute(RegisterPage.pageName,isClearBackRoutes: true);
-                    }, 
-                    width: getSize().width, 
-                    height: 52, 
-                    text: appText.signup,
-                    bgColor: Colors.white, 
-                    textColor: mainColor(),
-                    borderColor: mainColor(),
-                    raduis: 15
-                  ),
+                      onTap: () {
+                        nextRoute(RegisterPage.pageName,
+                            isClearBackRoutes: true);
+                      },
+                      width: getSize().width,
+                      height: 52,
+                      text: appText.signup,
+                      bgColor: Colors.white,
+                      textColor: mainColor(),
+                      borderColor: mainColor(),
+                      raduis: 15),
                 ),
               ],
             ),
-
 
             const Spacer(),
 
@@ -116,14 +100,12 @@ class IntroWidget{
             // ),
 
             // ignore: equal_elements_in_set
-            const Spacer(flex: 1,),
-          
-          
+            const Spacer(
+              flex: 1,
+            ),
           }
         ],
       ),
     );
   }
-
-
 }

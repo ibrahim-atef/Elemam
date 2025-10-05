@@ -14,9 +14,9 @@ import 'package:webinar/common/components.dart';
 import '../../../../common/common.dart';
 import '../../../../common/utils/app_text.dart';
 import '../../../../common/utils/object_instance.dart';
-import '../../../../config/assets.dart';
-import '../../../../config/colors.dart';
-import '../../../../config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 import '../../../pages/main_page/home_page/cart_page/cart_page.dart';
 import '../main_widget.dart';
 
@@ -127,7 +127,7 @@ class HomeWidget {
                                 children: [
                                   // basket
                                   MainWidget.menuButton(
-                                    isPng: true,
+                                      isPng: true,
                                       AppAssets.cartIconPng,
                                       userProvider
                                               .cartData?.items?.isNotEmpty ??

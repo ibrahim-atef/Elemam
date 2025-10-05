@@ -10,12 +10,12 @@ import 'package:webinar/common/common.dart';
 import 'package:webinar/common/components.dart';
 import 'package:webinar/common/utils/currency_utils.dart';
 import 'package:webinar/common/utils/date_formater.dart';
-import 'package:webinar/config/colors.dart';
+import 'package:webinar/common/config/colors.dart';
 import 'package:webinar/locator.dart';
 import 'package:html/parser.dart';
 import '../../../../../common/utils/app_text.dart';
-import '../../../../../config/assets.dart';
-import '../../../../../config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/styles.dart';
 import '../../../../models/dashboard_model.dart';
 import '../../../../widgets/main_widget/main_widget.dart';
 import '../cart_page/cart_page.dart';
@@ -854,7 +854,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             )
                           ],
                         )
-                      : Text(''),
+                      : const Text(''),
                 ),
               )),
         ],

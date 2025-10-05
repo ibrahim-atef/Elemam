@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:webinar/app/widgets/groups_widget/groups_widget.dart';
 import 'package:webinar/common/components.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/colors.dart';
+import 'package:webinar/common/config/colors.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});
@@ -21,13 +21,21 @@ class _GroupsPageState extends State<GroupsPage> {
         child: Column(
           children: [
             GroupsWidget.telegramGroups(),
-             Divider(color: white(),),
+            Divider(
+              color: white(),
+            ),
             GroupsWidget.faceBookGroups(),
-            Divider(color: white(),),
+            Divider(
+              color: white(),
+            ),
             GroupsWidget.youtubeGroups(),
-            Divider(color: white(),),
+            Divider(
+              color: white(),
+            ),
             GroupsWidget.instagramGroups(),
-            Divider(color: white(),),
+            Divider(
+              color: white(),
+            ),
             GroupsWidget.tiktokGroups(),
           ],
         ),

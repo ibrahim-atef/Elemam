@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webinar/app/models/group_model.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/colors.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 
 class GroupsWidget {
   static List<GroupModel> telegramGroupsList = [
@@ -39,7 +39,6 @@ class GroupsWidget {
         url: "https://www.facebook.com/share/g/18xM7Ui6Hi/"),
   ];
 
-
   static List<GroupModel> youtubeGroupsList = [
     GroupModel(
         name: appText.youtubeGroups,
@@ -47,14 +46,14 @@ class GroupsWidget {
   ];
   static List<GroupModel> instagramGroupsList = [
     GroupModel(
-        name: appText.instagram,
-        url: "https://www.instagram.com/dr.elemam/"),
+        name: appText.instagram, url: "https://www.instagram.com/dr.elemam/"),
   ];
 
   static List<GroupModel> tiktokGroupsList = [
     GroupModel(
         name: appText.tiktok,
-        url: "https://www.tiktok.com/@dr_m_elemam?is_from_webapp=1&sender_device=pc"),
+        url:
+            "https://www.tiktok.com/@dr_m_elemam?is_from_webapp=1&sender_device=pc"),
   ];
 
   static Future<void> _launchURL(String url) async {

@@ -9,7 +9,7 @@ import 'package:webinar/common/common.dart';
 import 'package:webinar/common/shimmer_component.dart';
 import 'package:webinar/common/utils/app_text.dart';
 import 'package:webinar/common/utils/object_instance.dart';
-import 'package:webinar/config/assets.dart';
+import 'package:webinar/common/config/assets.dart';
 
 import '../../../models/basic_model.dart';
 import '../../../services/user_service/blog_service.dart';
@@ -22,7 +22,6 @@ class BlogsPage extends StatefulWidget {
 }
 
 class _BlogsPageState extends State<BlogsPage> {
-
   List<BlogModel> blogData = [];
   bool isLoading = true;
 
@@ -44,14 +43,13 @@ class _BlogsPageState extends State<BlogsPage> {
       var max = scrollController.position.maxScrollExtent;
       var min = scrollController.position.pixels;
 
-      if(max - min < 200){
-        if(!isLoading){
+      if (max - min < 200) {
+        if (!isLoading) {
           getData();
         }
       }
     });
   }
-
 
   getCategories() async {
     categories = await BlogService.categories();
@@ -64,7 +62,8 @@ class _BlogsPageState extends State<BlogsPage> {
       isLoading = true;
     });
 
-    blogData += await BlogService.getBlog(blogData.length, category: selectedCategory?.id);
+    blogData += await BlogService.getBlog(blogData.length,
+        category: selectedCategory?.id);
 
     setState(() {
       isLoading = false;
@@ -73,71 +72,58 @@ class _BlogsPageState extends State<BlogsPage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return directionality(
-      child: Consumer<DrawerProvider>(
-        builder: (context, drawerProvider ,_) {
-          
-          return ClipRRect(
-            borderRadius: borderRadius(radius:  drawerProvider.isOpenDrawer ? 20 : 0),
-            child: Scaffold(
-            
-              appBar: appbar(
-                title: appText.blog,
-                leftIcon: AppAssets.menuSvg,
-                onTapLeftIcon: (){
-                  drawerController.showDrawer();
-                },
-                rightIcon: AppAssets.filterSvg,
-                onTapRightIcon: () async {
-            
-                  BasicModel? cat = await BlogWidget.showCategoriesDialog(selectedCategory, categories);
-                  
-                  if(cat != null){
-                    if(cat.id != selectedCategory?.id){
-                      
-                      selectedCategory = cat;
-                      blogData.clear();
-                      getData();
-                    }
+        child: Consumer<DrawerProvider>(builder: (context, drawerProvider, _) {
+      return ClipRRect(
+        borderRadius:
+            borderRadius(radius: drawerProvider.isOpenDrawer ? 20 : 0),
+        child: Scaffold(
+          appBar: appbar(
+              title: appText.blog,
+              leftIcon: AppAssets.menuSvg,
+              onTapLeftIcon: () {
+                drawerController.showDrawer();
+              },
+              rightIcon: AppAssets.filterSvg,
+              onTapRightIcon: () async {
+                BasicModel? cat = await BlogWidget.showCategoriesDialog(
+                    selectedCategory, categories);
+
+                if (cat != null) {
+                  if (cat.id != selectedCategory?.id) {
+                    selectedCategory = cat;
+                    blogData.clear();
+                    getData();
                   }
-                  
-                },
-                rightWidth: 22
-              ),
-            
-              body: !isLoading && blogData.isEmpty
+                }
+              },
+              rightWidth: 22),
+          body: !isLoading && blogData.isEmpty
               ? Center(
-                  child: emptyState(AppAssets.blogEmptyStateSvg, appText.noBlogPosts, appText.noBlogPostsDesc)
-                )
+                  child: emptyState(AppAssets.blogEmptyStateSvg,
+                      appText.noBlogPosts, appText.noBlogPostsDesc))
               : SingleChildScrollView(
                   controller: scrollController,
                   padding: padding(vertical: 10),
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
-            
                       ...List.generate(
-                        (isLoading && blogData.isEmpty) ? 3 : blogData.length, 
-                        (index) {
-                          return (isLoading && blogData.isEmpty)
-                        ? blogItemShimmer()
-                        : blogItem(blogData[index], (){
-                            nextRoute(DetailsBlogPage.pageName, arguments: blogData[index]);
-                          });
-                        }
-                      ),
-            
+                          (isLoading && blogData.isEmpty) ? 3 : blogData.length,
+                          (index) {
+                        return (isLoading && blogData.isEmpty)
+                            ? blogItemShimmer()
+                            : blogItem(blogData[index], () {
+                                nextRoute(DetailsBlogPage.pageName,
+                                    arguments: blogData[index]);
+                              });
+                      }),
                       space(100),
-            
                     ],
                   ),
                 ),
-              ),
-          );
-        }
-      )
-    );
-
+        ),
+      );
+    }));
   }
 }

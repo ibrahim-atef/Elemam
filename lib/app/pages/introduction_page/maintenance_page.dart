@@ -7,9 +7,9 @@ import 'package:webinar/common/common.dart';
 import 'package:webinar/common/components.dart';
 import 'package:webinar/common/utils/app_text.dart';
 import 'package:webinar/common/utils/constants.dart';
-import 'package:webinar/config/assets.dart';
-import 'package:webinar/config/colors.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 
 class MaintenancePage extends StatefulWidget {
   static const String pageName = '/maintenance';
@@ -20,14 +20,12 @@ class MaintenancePage extends StatefulWidget {
 }
 
 class MmaintenancePageState extends State<MaintenancePage> {
-
   var data;
-
 
   @override
   void initState() {
     super.initState();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       data = (ModalRoute.of(context)!.settings.arguments);
 
@@ -38,81 +36,67 @@ class MmaintenancePageState extends State<MaintenancePage> {
   @override
   Widget build(BuildContext context) {
     return directionality(
-      child: Scaffold(
-        appBar: appbar(title: appText.webinar,onTapLeftIcon: (){
-          exit(0);
-        }),
-        body: Container(
-          width: getSize().width,
-          height: getSize().height,
-          
-          decoration: const BoxDecoration(
-            image: DecorationImage(image: AssetImage(AppAssets.introBgPng), fit: BoxFit.cover),
-          ),
-
-          child: Column(
-            children: [
-
-              space(20),
-              
-              Image.network(
-                '${Constants.dommain}${data['image'] ?? ''}',
-                width: getSize().width * .7,
+        child: Scaffold(
+      appBar: appbar(
+          title: appText.webinar,
+          onTapLeftIcon: () {
+            exit(0);
+          }),
+      body: Container(
+        width: getSize().width,
+        height: getSize().height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage(AppAssets.introBgPng), fit: BoxFit.cover),
+        ),
+        child: Column(
+          children: [
+            space(20),
+            Image.network(
+              '${Constants.dommain}${data['image'] ?? ''}',
+              width: getSize().width * .7,
+            ),
+            Text(
+              data['title'] ?? '',
+              style: style20Bold(),
+            ),
+            Padding(
+              padding: padding(),
+              child: Text(
+                data['description'] ?? '',
+                style: style16Regular().copyWith(color: grey5E),
+                textAlign: TextAlign.center,
               ),
-
-
-              Text(
-                data['title'] ?? '',
-                style: style20Bold(),
-              ),
-              
-              Padding(
-                padding: padding(),
-                child: Text(
-                  data['description'] ?? '',
-                  style: style16Regular().copyWith(color: grey5E),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              space(20),
-
-              MonthTimer(data['end_date'] ?? ''),
-
-              space(32),
-
-              button(
-                onTap: (){
+            ),
+            space(20),
+            MonthTimer(data['end_date'] ?? ''),
+            space(32),
+            button(
+                onTap: () {
                   launchUrlString(data?['maintenance_button']?['link'] ?? '');
-                }, 
-                width: getSize().width * .4, 
-                height: 52, 
-                text: data?['maintenance_button']?['title'] ?? '', 
+                },
+                width: getSize().width * .4,
+                height: 52,
+                text: data?['maintenance_button']?['title'] ?? '',
                 bgColor: mainColor(),
                 textColor: Colors.white,
-                raduis: 15
-              )
-
-            ],
-          ),
+                raduis: 15)
+          ],
         ),
-      )
-    );
+      ),
+    ));
   }
 }
 
-
-
 class MonthTimer extends StatefulWidget {
   final int date;
-  const MonthTimer(this.date,{Key? key} ) : super(key: key);
+  const MonthTimer(this.date, {super.key});
 
   @override
   State<MonthTimer> createState() => _MonthTimerState();
 }
 
 class _MonthTimerState extends State<MonthTimer> {
-
   late Timer timer;
   int seconds = 0;
 
@@ -123,19 +107,27 @@ class _MonthTimerState extends State<MonthTimer> {
     init();
   }
 
-  init(){
+  init() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if(mounted){
-        if(timer.isActive){
-
-          seconds = DateTime(DateTime.now().year , DateTime.now().month, DateTime(DateTime.now().year, DateTime.now().month + 1, 0).day, 23,59, 59).difference(DateTime.now()).inSeconds;
+      if (mounted) {
+        if (timer.isActive) {
+          seconds = DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime(DateTime.now().year, DateTime.now().month + 1, 0)
+                      .day,
+                  23,
+                  59,
+                  59)
+              .difference(DateTime.now())
+              .inSeconds;
 
           setState(() {});
         }
       }
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -144,21 +136,19 @@ class _MonthTimerState extends State<MonthTimer> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           // days
           Column(
             children: [
-
               Text(
-                dayHourMinuteSecondFormatted(Duration(seconds: seconds)).split(':').first,
+                dayHourMinuteSecondFormatted(Duration(seconds: seconds))
+                    .split(':')
+                    .first,
                 style: style16Regular().copyWith(color: mainColor()),
               ),
-
               Text(
                 appText.day,
                 style: style10Regular().copyWith(color: greyCF),
               )
-
             ],
           ),
 
@@ -166,21 +156,19 @@ class _MonthTimerState extends State<MonthTimer> {
             ' : ',
             style: style16Regular().copyWith(color: mainColor()),
           ),
-          
+
           // Hours
           Column(
             children: [
-
               Text(
-                dayHourMinuteSecondFormatted(Duration(seconds: seconds)).split(':')[1],
+                dayHourMinuteSecondFormatted(Duration(seconds: seconds))
+                    .split(':')[1],
                 style: style16Regular().copyWith(color: mainColor()),
               ),
-
               Text(
                 appText.hr,
                 style: style10Regular().copyWith(color: greyCF),
               )
-
             ],
           ),
 
@@ -188,21 +176,19 @@ class _MonthTimerState extends State<MonthTimer> {
             ' : ',
             style: style16Regular().copyWith(color: mainColor()),
           ),
-          
+
           // min
           Column(
             children: [
-
               Text(
-                dayHourMinuteSecondFormatted(Duration(seconds: seconds)).split(':')[2],
+                dayHourMinuteSecondFormatted(Duration(seconds: seconds))
+                    .split(':')[2],
                 style: style16Regular().copyWith(color: mainColor()),
               ),
-
               Text(
                 appText.min,
                 style: style10Regular().copyWith(color: greyCF),
               )
-
             ],
           ),
 
@@ -210,38 +196,29 @@ class _MonthTimerState extends State<MonthTimer> {
             ' : ',
             style: style16Regular().copyWith(color: mainColor()),
           ),
-          
+
           // second
           Column(
             children: [
-
               Text(
-                dayHourMinuteSecondFormatted(Duration(seconds: seconds)).split(':')[3],
+                dayHourMinuteSecondFormatted(Duration(seconds: seconds))
+                    .split(':')[3],
                 style: style16Regular().copyWith(color: mainColor()),
               ),
-
               Text(
                 appText.sec,
                 style: style10Regular().copyWith(color: greyCF),
               )
-
             ],
           ),
-
-          
-          
-
-          
-
         ],
       ),
     );
   }
 
-
   @override
   void dispose() {
-    timer.cancel();  
+    timer.cancel();
     super.dispose();
   }
 
@@ -255,6 +232,4 @@ class _MonthTimerState extends State<MonthTimer> {
       return seg.toString().padLeft(2, '0');
     }).join(':');
   }
-
-
 }

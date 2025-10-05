@@ -11,10 +11,10 @@ import 'package:webinar/app/services/guest_service/guest_service.dart';
 import 'package:webinar/common/common.dart';
 import 'package:webinar/common/data/app_data.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/assets.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/styles.dart';
 
-import '../../../config/colors.dart';
+import 'package:webinar/common/config/colors.dart';
 import '../authentication_page/login_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -89,7 +89,7 @@ class _SplashPageState extends State<SplashPage>
         width: getSize().width,
         height: getSize().height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
           color: mainColor(),
           // image: DecorationImage(
           //   image: AssetImage(AppAssets.splashPng),
@@ -119,7 +119,7 @@ class _SplashPageState extends State<SplashPage>
                   child: Container(
                     height: 200,
                     width: 200,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage(AppAssets.splash_logo_png),
                           fit: BoxFit.cover,

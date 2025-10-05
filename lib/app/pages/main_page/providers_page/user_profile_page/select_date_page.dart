@@ -8,9 +8,9 @@ import 'package:webinar/app/services/guest_service/providers_service.dart';
 import 'package:webinar/common/common.dart';
 import 'package:webinar/common/components.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/assets.dart';
-import 'package:webinar/config/colors.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 
 import '../../../../../common/utils/date_formater.dart';
 
@@ -24,14 +24,12 @@ class SelectDatePage extends StatefulWidget {
 }
 
 class _SelectDatePageState extends State<SelectDatePage> {
-  
   DateTime selectedDate = DateTime.now();
 
   bool isLoadingGetMeeting = false;
   MeetingTimesModel? meetings;
 
   Times? selectedTime;
-
 
   @override
   void initState() {
@@ -41,14 +39,14 @@ class _SelectDatePageState extends State<SelectDatePage> {
   }
 
   getMeetings() async {
-
     meetings = null;
 
     setState(() {
       isLoadingGetMeeting = true;
     });
 
-    meetings = await ProvidersService.getMeetings(widget.userId, selectedDate.millisecondsSinceEpoch);
+    meetings = await ProvidersService.getMeetings(
+        widget.userId, selectedDate.millisecondsSinceEpoch);
 
     setState(() {
       isLoadingGetMeeting = false;
@@ -59,119 +57,98 @@ class _SelectDatePageState extends State<SelectDatePage> {
   Widget build(BuildContext context) {
     return directionality(
       child: Container(
-        
         constraints: BoxConstraints(
           minHeight: getSize().height * .2,
           maxHeight: getSize().height * .85,
         ),
-
         child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: padding(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-      
-                space(25),
+          physics: const BouncingScrollPhysics(),
+          padding: padding(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              space(25),
 
-                Text(
-                  appText.pickaDate,
-                  style: style20Bold(),
-                ),
-      
-                space(20),
+              Text(
+                appText.pickaDate,
+                style: style20Bold(),
+              ),
 
-                // time count
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    
-                    Text(
-                      timeStampToDate(selectedDate.millisecondsSinceEpoch),
-                      style: style16Bold(),
-                    ),
+              space(20),
 
-                    space(6),
+              // time count
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    timeStampToDate(selectedDate.millisecondsSinceEpoch),
+                    style: style16Bold(),
+                  ),
+                  space(6),
+                  Text(
+                    '${meetings?.count ?? '-'} ${appText.meetingTimesAreAvailable}',
+                    style: style12Regular().copyWith(color: greyA5),
+                  ),
+                ],
+              ),
 
-                    Text(
-                      '${meetings?.count ?? '-'} ${appText.meetingTimesAreAvailable}',
-                      style: style12Regular().copyWith(color: greyA5),
-                    ),
+              space(10),
 
-                  ],
-                ),
+              // calender
+              Container(
+                padding: padding(horizontal: 20),
+                width: getSize().width,
+                child: TableCalendar(
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2030, 3, 14),
+                  focusedDay: selectedDate,
+                  currentDay: selectedDate,
+                  onDaySelected: (selected, focusedDay) {
+                    if (selected.difference(DateTime.now()).inDays >= 0) {
+                      setState(() {
+                        selectedTime = null;
+                        selectedDate = selected;
+                      });
 
-                space(10),
-
-                // calender
-                Container(
-                  padding: padding(horizontal: 20),
-                  width: getSize().width,
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2010, 10, 16),
-                    lastDay: DateTime.utc(2030, 3, 14),
-                    
-                    focusedDay: selectedDate,
-                    currentDay: selectedDate,
-
-                    onDaySelected: (selected, focusedDay) {
-                      if(selected.difference(DateTime.now()).inDays >= 0){
-
-                        setState(() {
-                          selectedTime = null;
-                          selectedDate = selected;
-                        });
-
-                        getMeetings();
-                      }
-                    },
-
-                    calendarFormat: CalendarFormat.month,
-                    headerStyle: HeaderStyle(
+                      getMeetings();
+                    }
+                  },
+                  calendarFormat: CalendarFormat.month,
+                  headerStyle: HeaderStyle(
                       formatButtonVisible: false,
                       titleCentered: true,
-                      titleTextStyle: style16Bold()
+                      titleTextStyle: style16Bold()),
+                  calendarStyle: CalendarStyle(
+                    todayDecoration: BoxDecoration(
+                      color: mainColor(),
+                      shape: BoxShape.circle,
                     ),
-
-
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: mainColor(),
-                        shape: BoxShape.circle,
-                      ),
-
-                      selectedDecoration: BoxDecoration(
-                        color: mainColor(),
-                        shape: BoxShape.circle,
-                      ),
-                      
+                    selectedDecoration: BoxDecoration(
+                      color: mainColor(),
+                      shape: BoxShape.circle,
                     ),
-
-                    rowHeight: 45,
                   ),
+                  rowHeight: 45,
                 ),
+              ),
 
-                space(20),
+              space(20),
 
-                // important
-                AnimatedCrossFade(
-                  firstChild: SizedBox(width: getSize().width), 
+              // important
+              AnimatedCrossFade(
+                  firstChild: SizedBox(width: getSize().width),
                   secondChild: Column(
                     children: [
-
                       Container(
                         width: getSize().width,
                         padding: padding(horizontal: 10, vertical: 10),
-
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: borderRadius(),
                           border: Border.all(color: greyE7),
                         ),
-                        
                         child: Row(
                           children: [
-
                             // icon
                             Container(
                               width: 45,
@@ -180,9 +157,11 @@ class _SelectDatePageState extends State<SelectDatePage> {
                                 color: mainColor(),
                                 shape: BoxShape.circle,
                               ),
-                              
                               alignment: Alignment.center,
-                              child: SvgPicture.asset(AppAssets.timeCircleSvg, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn), width: 20),
+                              child: SvgPicture.asset(AppAssets.timeCircleSvg,
+                                  colorFilter: const ColorFilter.mode(
+                                      Colors.white, BlendMode.srcIn),
+                                  width: 20),
                             ),
 
                             space(0, width: 10),
@@ -192,59 +171,55 @@ class _SelectDatePageState extends State<SelectDatePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                            
                                   Text(
                                     appText.important,
                                     style: style14Bold(),
                                   ),
-
-                                  space(5),                                  
-                                  
+                                  space(5),
                                   Text(
                                     '${appText.timeSlotsDisplayedIn} ${selectedTime?.meeting?.timeZone ?? ''} ${selectedTime?.meeting?.gmt ?? ''} ${appText.timeZone}.',
-                                    style: style12Regular().copyWith(color: greyA5),
+                                    style: style12Regular()
+                                        .copyWith(color: greyA5),
                                   ),
-                            
                                 ],
                               ),
                             ),
-
-
-                            
-
                           ],
                         ),
                       ),
-
                       space(24),
                     ],
                   ),
-                
-                  crossFadeState: selectedTime == null ? CrossFadeState.showFirst : CrossFadeState.showSecond, 
-                  duration: const Duration(milliseconds: 300)
-                ),
+                  crossFadeState: selectedTime == null
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: const Duration(milliseconds: 300)),
 
-                
-                Text(
-                  appText.pickaTime,
-                  style: style20Bold(),
-                ),
+              Text(
+                appText.pickaTime,
+                style: style20Bold(),
+              ),
 
-                space(16),
+              space(16),
 
-                // times
-                AnimatedCrossFade(
-                  firstChild: SizedBox(width: getSize().width), 
+              // times
+              AnimatedCrossFade(
+                  firstChild: SizedBox(width: getSize().width),
                   secondChild: SizedBox(
                     width: getSize().width,
                     child: GridView(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 12/4, mainAxisSpacing: 16, crossAxisSpacing: 16),
-                      children: List.generate(meetings?.times?.length ?? 0, (index) {
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 12 / 4,
+                              mainAxisSpacing: 16,
+                              crossAxisSpacing: 16),
+                      children:
+                          List.generate(meetings?.times?.length ?? 0, (index) {
                         return GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             selectedTime = meetings!.times![index];
                             setState(() {});
                           },
@@ -252,51 +227,54 @@ class _SelectDatePageState extends State<SelectDatePage> {
                             duration: const Duration(milliseconds: 250),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: selectedTime == meetings?.times?[index] ? mainColor() : Colors.white,
-                              borderRadius: borderRadius(radius: 10),
-                              border: Border.all(
-                                color: selectedTime == meetings?.times?[index] ? mainColor() : greyE7,
-                              )
-                            ),
-
+                                color: selectedTime == meetings?.times?[index]
+                                    ? mainColor()
+                                    : Colors.white,
+                                borderRadius: borderRadius(radius: 10),
+                                border: Border.all(
+                                  color: selectedTime == meetings?.times?[index]
+                                      ? mainColor()
+                                      : greyE7,
+                                )),
                             child: Text(
                               meetings?.times?[index].time ?? '',
-                              style: style12Regular().copyWith(color: selectedTime == meetings?.times?[index] ?Colors.white : greyA5),
+                              style: style12Regular().copyWith(
+                                  color: selectedTime == meetings?.times?[index]
+                                      ? Colors.white
+                                      : greyA5),
                             ),
-
                           ),
                         );
                       }),
                     ),
-                  ), 
-                  crossFadeState: meetings == null ? CrossFadeState.showFirst : CrossFadeState.showSecond, 
-                  duration: const Duration(milliseconds: 300)
-                ),
+                  ),
+                  crossFadeState: meetings == null
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: const Duration(milliseconds: 300)),
 
-                space(16),
-                
-                button(
-                  onTap: (){
-                    if(selectedTime != null){
+              space(16),
+
+              button(
+                  onTap: () {
+                    if (selectedTime != null) {
                       backRoute();
-                      baseBottomSheet(child: FinalizeDatePage(selectedDate, selectedTime!, widget.profile));
+                      baseBottomSheet(
+                          child: FinalizeDatePage(
+                              selectedDate, selectedTime!, widget.profile));
                     }
-                  }, 
-                  width: getSize().width, 
-                  height: 51, 
-                  text: appText.finalizeReservation, 
+                  },
+                  width: getSize().width,
+                  height: 51,
+                  text: appText.finalizeReservation,
                   bgColor: mainColor(),
-                  textColor: Colors.white
-                ),
+                  textColor: Colors.white),
 
-                space(30),
-
-
-              ],
-            ),
+              space(30),
+            ],
           ),
+        ),
       ),
-      
     );
   }
 }

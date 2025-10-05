@@ -8,7 +8,7 @@ import 'package:webinar/common/common.dart';
 import 'package:webinar/common/components.dart';
 import 'package:webinar/common/utils/app_text.dart';
 import 'package:webinar/common/utils/date_formater.dart';
-import 'package:webinar/config/assets.dart';
+import 'package:webinar/common/config/assets.dart';
 import 'package:webinar/locator.dart';
 
 import 'comment_details_page.dart';
@@ -21,8 +21,8 @@ class CommentsPage extends StatefulWidget {
   State<CommentsPage> createState() => _CommentsPageState();
 }
 
-class _CommentsPageState extends State<CommentsPage> with TickerProviderStateMixin{
-
+class _CommentsPageState extends State<CommentsPage>
+    with TickerProviderStateMixin {
   bool isLoading = false;
   late TabController tabController;
 
@@ -33,9 +33,9 @@ class _CommentsPageState extends State<CommentsPage> with TickerProviderStateMix
   void initState() {
     super.initState();
 
-    if(locator<UserProvider>().profile?.roleName != 'user'){
+    if (locator<UserProvider>().profile?.roleName != 'user') {
       tabController = TabController(length: 2, vsync: this);
-    }else{
+    } else {
       tabController = TabController(length: 1, vsync: this);
     }
 
@@ -43,7 +43,6 @@ class _CommentsPageState extends State<CommentsPage> with TickerProviderStateMix
   }
 
   getData() async {
-
     setState(() {
       isLoading = true;
     });
@@ -58,115 +57,110 @@ class _CommentsPageState extends State<CommentsPage> with TickerProviderStateMix
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return directionality(
-      child: Scaffold(
-        appBar: appbar(title: appText.comments),
-
-        body: isLoading
-      ? loading()
-      : Column(
-          children: [
-            space(6),
-
-
-            tabBar((p0) => null, tabController, [
-              
-              Tab(
-                text: appText.myComments,
-                height: 32,
-              ),
-              
-              if(locator<UserProvider>().profile?.roleName != 'user')...{
-                Tab(
-                  text: appText.myClassComments,
-                  height: 32,
-                ),
-              }
-              
-            ]),
-
-
-            Expanded(
-              child: TabBarView(
-                controller: tabController,
-                children: [
-
-                  // my comments
-                  myComments.isEmpty
-                ? emptyState(AppAssets.commentsEmptyStateSvg, appText.noComments, appText.thereIsNoInformationToDisplay)
-                : SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: padding(),
-                    child: Column(
-                      children: [
-
-                        space(10),
-
-                        ...List.generate(myComments.length, (index) {
-                          return CommentsWidget.myCommnetsItem(
-                            myComments[index],
-                            () async {
-                              bool? res = await nextRoute(CommentDetailsPage.pageName, arguments: [myComments[index], true]);
-
-                              if(res != null && res){
-                                getData();
-                              }
-                            }
-                          );
-                        })
-
-                      ],
-                    ),
+        child: Scaffold(
+      appBar: appbar(title: appText.comments),
+      body: isLoading
+          ? loading()
+          : Column(
+              children: [
+                space(6),
+                tabBar((p0) => null, tabController, [
+                  Tab(
+                    text: appText.myComments,
+                    height: 32,
                   ),
-
-                  
-                  if(locator<UserProvider>().profile?.roleName != 'user')...{
-                    
-                    // my class comments
-                    myClassComments.isEmpty
-                  ? emptyState(AppAssets.commentsEmptyStateSvg, appText.noComments, appText.thereIsNoInformationToDisplay)
-                  : SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: padding(),
-                      child: Column(
-                        children: [
-
-                          space(10),
-
-                          ...List.generate(myClassComments.length, (index) {
-                            // print(myClassComments[index].)
-                            return userCard(
-                              myClassComments[index].user?.avatar ?? '', 
-                              myClassComments[index].user?.fullName ?? '', 
-                              myClassComments[index].webinar?.title ?? '', 
-                              timeStampToDateHour((myClassComments[index].createAt ?? 0) * 1000), 
-                              '', 
-                              myClassComments[index].status ?? '',
-                              (){
-                                nextRoute(CommentDetailsPage.pageName, arguments: [myClassComments[index], false]);
-                              },
-                              onTapSubtitle: (){
-                                nextRoute(SingleCoursePage.pageName, arguments: [myClassComments[index].webinar?.id, myClassComments[index].webinar?.type == 'bundle', myClassComments[index].id]);
-                              }
-                            );
-                          })
-
-                        ],
-                      ),
+                  if (locator<UserProvider>().profile?.roleName != 'user') ...{
+                    Tab(
+                      text: appText.myClassComments,
+                      height: 32,
                     ),
                   }
+                ]),
+                Expanded(
+                    child: TabBarView(controller: tabController, children: [
+                  // my comments
+                  myComments.isEmpty
+                      ? emptyState(
+                          AppAssets.commentsEmptyStateSvg,
+                          appText.noComments,
+                          appText.thereIsNoInformationToDisplay)
+                      : SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: padding(),
+                          child: Column(
+                            children: [
+                              space(10),
+                              ...List.generate(myComments.length, (index) {
+                                return CommentsWidget.myCommnetsItem(
+                                    myComments[index], () async {
+                                  bool? res = await nextRoute(
+                                      CommentDetailsPage.pageName,
+                                      arguments: [myComments[index], true]);
 
-                ]
-              )
-            )
-            
-          ],
-        ),
+                                  if (res != null && res) {
+                                    getData();
+                                  }
+                                });
+                              })
+                            ],
+                          ),
+                        ),
 
-      )
-    );
+                  if (locator<UserProvider>().profile?.roleName != 'user') ...{
+                    // my class comments
+                    myClassComments.isEmpty
+                        ? emptyState(
+                            AppAssets.commentsEmptyStateSvg,
+                            appText.noComments,
+                            appText.thereIsNoInformationToDisplay)
+                        : SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            padding: padding(),
+                            child: Column(
+                              children: [
+                                space(10),
+                                ...List.generate(myClassComments.length,
+                                    (index) {
+                                  // print(myClassComments[index].)
+                                  return userCard(
+                                      myClassComments[index].user?.avatar ?? '',
+                                      myClassComments[index].user?.fullName ??
+                                          '',
+                                      myClassComments[index].webinar?.title ??
+                                          '',
+                                      timeStampToDateHour(
+                                          (myClassComments[index].createAt ??
+                                                  0) *
+                                              1000),
+                                      '',
+                                      myClassComments[index].status ?? '', () {
+                                    nextRoute(CommentDetailsPage.pageName,
+                                        arguments: [
+                                          myClassComments[index],
+                                          false
+                                        ]);
+                                  }, onTapSubtitle: () {
+                                    nextRoute(SingleCoursePage.pageName,
+                                        arguments: [
+                                          myClassComments[index].webinar?.id,
+                                          myClassComments[index]
+                                                  .webinar
+                                                  ?.type ==
+                                              'bundle',
+                                          myClassComments[index].id
+                                        ]);
+                                  });
+                                })
+                              ],
+                            ),
+                          ),
+                  }
+                ]))
+              ],
+            ),
+    ));
   }
 }

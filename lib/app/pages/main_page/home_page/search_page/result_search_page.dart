@@ -6,8 +6,8 @@ import 'package:webinar/app/services/guest_service/course_service.dart';
 import 'package:webinar/common/common.dart';
 import 'package:webinar/common/utils/app_text.dart';
 import 'package:webinar/common/utils/tablet_detector.dart';
-import 'package:webinar/config/colors.dart';
-import '../../../../../config/assets.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/assets.dart';
 import '../../../../../common/components.dart';
 
 class ResultSearchPage extends StatefulWidget {
@@ -18,8 +18,8 @@ class ResultSearchPage extends StatefulWidget {
   State<ResultSearchPage> createState() => _ResultSearchPageState();
 }
 
-class _ResultSearchPageState extends State<ResultSearchPage> with SingleTickerProviderStateMixin{
-
+class _ResultSearchPageState extends State<ResultSearchPage>
+    with SingleTickerProviderStateMixin {
   TextEditingController searchController = TextEditingController();
   FocusNode searchNode = FocusNode();
 
@@ -40,16 +40,14 @@ class _ResultSearchPageState extends State<ResultSearchPage> with SingleTickerPr
     super.initState();
 
     searchController.addListener(() {
-      if(searchController.text.trim().isNotEmpty){
-        
-        if(!isShowButton){
+      if (searchController.text.trim().isNotEmpty) {
+        if (!isShowButton) {
           setState(() {
             isShowButton = true;
           });
         }
-      }else{
-
-        if(isShowButton){
+      } else {
+        if (isShowButton) {
           setState(() {
             isShowButton = false;
           });
@@ -57,29 +55,23 @@ class _ResultSearchPageState extends State<ResultSearchPage> with SingleTickerPr
       }
     });
 
-
     tabController = TabController(length: 3, vsync: this);
     tabController.addListener(() {
-
-      if(tabController.index != currentTab){
+      if (tabController.index != currentTab) {
         onChangeTab(tabController.index);
       }
     });
 
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       searchText = ModalRoute.of(context)!.settings.arguments as String;
 
-
-      if(searchText.isNotEmpty){
+      if (searchText.isNotEmpty) {
         getData();
       }
     });
   }
 
-
   getData() async {
-    
     setState(() {
       isLoading = true;
     });
@@ -95,188 +87,186 @@ class _ResultSearchPageState extends State<ResultSearchPage> with SingleTickerPr
     });
   }
 
-
-  onChangeTab(int i){
+  onChangeTab(int i) {
     setState(() {
       currentTab = i;
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return directionality(
-      child: Scaffold(
-        appBar: appbar(title: appText.search),
-      
-        body: Stack(
-          children: [
-            
-            Positioned.fill(
-              
-              top: 20,
-              child: NestedScrollView(
-                physics: const BouncingScrollPhysics(),
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    // input
-                    SliverAppBar(
-                      automaticallyImplyLeading: false,
-                      backgroundColor: Colors.transparent,
-                      titleSpacing: 0,
-                      
-                      title: Padding(
-                        padding: padding(),
-                        child: input(
-                          searchController, searchNode, 
+        child: Scaffold(
+      appBar: appbar(title: appText.search),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            top: 20,
+            child: NestedScrollView(
+              physics: const BouncingScrollPhysics(),
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  // input
+                  SliverAppBar(
+                    automaticallyImplyLeading: false,
+                    backgroundColor: Colors.transparent,
+                    titleSpacing: 0,
+                    title: Padding(
+                      padding: padding(),
+                      child: input(searchController, searchNode,
                           '${classesData.length + usersData.length + organizationsData.length} ${appText.searchResultDesc} "$searchText"',
-                          iconPathLeft: AppAssets.searchSvg, isBorder: true, 
-                          fillColor: Colors.transparent
-                        ),
-                      ),
+                          iconPathLeft: AppAssets.searchSvg,
+                          isBorder: true,
+                          fillColor: Colors.transparent),
                     ),
-                    
-                    // Tab
-                    SliverAppBar(
+                  ),
+
+                  // Tab
+                  SliverAppBar(
                       pinned: true,
                       centerTitle: true,
                       automaticallyImplyLeading: false,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      shadowColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(.2),
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      shadowColor: Theme.of(context)
+                          .scaffoldBackgroundColor
+                          .withOpacity(.2),
                       elevation: 10,
                       titleSpacing: 0,
-                      
-                      title: tabBar(
-                        onChangeTab, 
-                        tabController, 
-                        [
-                          Tab(
-                            text: appText.classes + (currentTab == 0 ? ' (${classesData.length}) ' : ''),
-                            height: 32,
-                          ),
-                          
-                          Tab(
-                            text: appText.users + (currentTab == 1 ? ' (${usersData.length}) ' : ''),
-                            height: 32,
-                          ),
-                    
-                          Tab(
-                            text: appText.organizations + (currentTab == 2 ? ' (${organizationsData.length}) ' : ''),
-                            height: 32,
-                          ),
-                        ]
-                      )
-                    ),
-                  ];
-                },
+                      title: tabBar(onChangeTab, tabController, [
+                        Tab(
+                          text: appText.classes +
+                              (currentTab == 0
+                                  ? ' (${classesData.length}) '
+                                  : ''),
+                          height: 32,
+                        ),
+                        Tab(
+                          text: appText.users +
+                              (currentTab == 1
+                                  ? ' (${usersData.length}) '
+                                  : ''),
+                          height: 32,
+                        ),
+                        Tab(
+                          text: appText.organizations +
+                              (currentTab == 2
+                                  ? ' (${organizationsData.length}) '
+                                  : ''),
+                          height: 32,
+                        ),
+                      ])),
+                ];
+              },
+              body: isLoading
+                  ? loading()
+                  : TabBarView(
+                      physics: const BouncingScrollPhysics(),
+                      controller: tabController,
+                      children: [
+                          // Classes
+                          classesData.isEmpty
+                              ? emptyState(
+                                  AppAssets.searchEmptyStateSvg,
+                                  appText.resultNotFound,
+                                  appText.tryMoreAccurateWordsToReachResults)
+                              : Padding(
+                                  padding: padding(),
+                                  child: Column(
+                                    children: [
+                                      ...List.generate(classesData.length,
+                                          (index) {
+                                        return courseItemVertically(
+                                            classesData[index]);
+                                      }),
+                                    ],
+                                  ),
+                                ),
 
-                body: isLoading
-              ? loading()
-              : TabBarView(
-                  physics: const BouncingScrollPhysics(),
-                  controller: tabController,
-                  children: [
-      
-                    // Classes
-                    classesData.isEmpty
-                  ? emptyState(AppAssets.searchEmptyStateSvg, appText.resultNotFound, appText.tryMoreAccurateWordsToReachResults)
-                  : Padding(
-                      padding: padding(),
-                      child: Column(
-                        children: [
-                          ...List.generate(classesData.length, (index) {
-                            return courseItemVertically(classesData[index]);
-                          }),
-                        ],
-                      ),
-                    ),
-      
-                    // Users
-                    usersData.isEmpty
-                  ? emptyState(AppAssets.searchEmptyStateSvg, appText.resultNotFound, appText.tryMoreAccurateWordsToReachResults)
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: TabletDetector.isTablet() ? 3 : 2,
-                        mainAxisSpacing: 22,
-                        crossAxisSpacing: 22,
-                        mainAxisExtent: 195,
-                      ), 
-                      padding: padding(),
-                      itemCount: usersData.length,
-                      itemBuilder: (context, index) {
-                        return userProfileCard(usersData[index], (){
-                          nextRoute(UserProfilePage.pageName, arguments: usersData[index].id);
-                        });
-                      },
-                    ),
-      
-                    // Organizations
-                    organizationsData.isEmpty
-                  ? emptyState(AppAssets.searchEmptyStateSvg, appText.resultNotFound, appText.tryMoreAccurateWordsToReachResults)
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: TabletDetector.isTablet() ? 3 : 2,
-                        mainAxisSpacing: 22,
-                        crossAxisSpacing: 20,
-                        childAspectRatio: 22,
-                        mainAxisExtent: 195,
-                      ), 
-                      padding: padding(),
-                      itemCount: organizationsData.length,
-                      itemBuilder: (context, index) {
-                        return userProfileCard(organizationsData[index], (){
-                          nextRoute(UserProfilePage.pageName, arguments: organizationsData[index].id);
-                        });
-                      },
-                    ),
-      
-                  ]
-                ),
-               
-              ),
+                          // Users
+                          usersData.isEmpty
+                              ? emptyState(
+                                  AppAssets.searchEmptyStateSvg,
+                                  appText.resultNotFound,
+                                  appText.tryMoreAccurateWordsToReachResults)
+                              : GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount:
+                                        TabletDetector.isTablet() ? 3 : 2,
+                                    mainAxisSpacing: 22,
+                                    crossAxisSpacing: 22,
+                                    mainAxisExtent: 195,
+                                  ),
+                                  padding: padding(),
+                                  itemCount: usersData.length,
+                                  itemBuilder: (context, index) {
+                                    return userProfileCard(usersData[index],
+                                        () {
+                                      nextRoute(UserProfilePage.pageName,
+                                          arguments: usersData[index].id);
+                                    });
+                                  },
+                                ),
+
+                          // Organizations
+                          organizationsData.isEmpty
+                              ? emptyState(
+                                  AppAssets.searchEmptyStateSvg,
+                                  appText.resultNotFound,
+                                  appText.tryMoreAccurateWordsToReachResults)
+                              : GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount:
+                                        TabletDetector.isTablet() ? 3 : 2,
+                                    mainAxisSpacing: 22,
+                                    crossAxisSpacing: 20,
+                                    childAspectRatio: 22,
+                                    mainAxisExtent: 195,
+                                  ),
+                                  padding: padding(),
+                                  itemCount: organizationsData.length,
+                                  itemBuilder: (context, index) {
+                                    return userProfileCard(
+                                        organizationsData[index], () {
+                                      nextRoute(UserProfilePage.pageName,
+                                          arguments:
+                                              organizationsData[index].id);
+                                    });
+                                  },
+                                ),
+                        ]),
             ),
-
-
-            AnimatedPositioned(
+          ),
+          AnimatedPositioned(
               duration: const Duration(milliseconds: 300),
               bottom: isShowButton ? 0 : -150,
               child: Container(
                 width: getSize().width,
                 padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 20,
-                  bottom: 30
-                ),
-
+                    left: 20, right: 20, top: 20, bottom: 30),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    boxShadow(Colors.black.withOpacity(.1),blur: 15,y: -3)
-                  ],
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30))
-                ),
+                    color: Colors.white,
+                    boxShadow: [
+                      boxShadow(Colors.black.withOpacity(.1), blur: 15, y: -3)
+                    ],
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(30))),
                 child: button(
-                  onTap: (){
-                    
-                    searchText = searchController.text.trim();
+                    onTap: () {
+                      searchText = searchController.text.trim();
 
-                    getData();
-                  }, 
-                  width: getSize().width, 
-                  height: 52, 
-                  text: appText.search, 
-                  bgColor: mainColor(),
-                  textColor: Colors.white
-                ),
-              )
-            )
-
-      
-          ],
-        ),
-      )
-    );
+                      getData();
+                    },
+                    width: getSize().width,
+                    height: 52,
+                    text: appText.search,
+                    bgColor: mainColor(),
+                    textColor: Colors.white),
+              ))
+        ],
+      ),
+    ));
   }
 }

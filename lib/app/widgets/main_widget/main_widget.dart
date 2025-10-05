@@ -13,9 +13,9 @@ import 'package:webinar/locator.dart';
 import '../../../common/common.dart';
 import '../../../common/enums/page_name_enum.dart';
 import '../../../common/utils/app_text.dart';
-import '../../../config/assets.dart';
-import '../../../config/colors.dart';
-import '../../../config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 import '../../providers/app_language_provider.dart';
 
 class MainWidget {
@@ -176,14 +176,14 @@ class MainWidget {
                               searchList = PublicData.currencyListData.toList();
                             } else {
                               searchList = [];
-                              PublicData.currencyListData.forEach((element) {
+                              for (var element in PublicData.currencyListData) {
                                 if (element.currency
                                         ?.toLowerCase()
                                         .contains(text.trim().toLowerCase()) ??
                                     false) {
                                   searchList.add(element);
                                 }
-                              });
+                              }
                             }
 
                             state(() {});
@@ -343,12 +343,8 @@ class MainWidget {
     );
   }
 
-  static Widget menuButton(
-      String iconPath,
-      bool isBadegBadge,
-      Color iconColor,
-      Color bgColor,
-      Function onTap,
+  static Widget menuButton(String iconPath, bool isBadegBadge, Color iconColor,
+      Color bgColor, Function onTap,
       {bool isPng = false} // إضافة الباراميتر الجديد
       ) {
     return GestureDetector(
@@ -369,15 +365,16 @@ class MainWidget {
               alignment: Alignment.center,
               child: isPng
                   ? Image.asset(
-                iconPath,
-                color: iconColor, // لو محتاجين تغيير اللون في PNG ممكن نستخدم color
-                width: 30, // تحديد الحجم إذا لزم الأمر
-                height: 30,
-              )
+                      iconPath,
+                      color:
+                          iconColor, // لو محتاجين تغيير اللون في PNG ممكن نستخدم color
+                      width: 30, // تحديد الحجم إذا لزم الأمر
+                      height: 30,
+                    )
                   : SvgPicture.asset(
-                iconPath,
-                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-              ),
+                      iconPath,
+                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                    ),
             ),
             if (isBadegBadge) ...{
               Positioned(
@@ -386,7 +383,8 @@ class MainWidget {
                 child: Container(
                   width: 7,
                   height: 7,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: red49),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: red49),
                 ),
               ),
             },
@@ -397,13 +395,13 @@ class MainWidget {
   }
 
   static Widget navItem(
-      PageNames thisPage,
-      PageNames selectedPage,
-      String name,
-      String icon,
-      Function onTap,
-      BuildContext context, // تمرير الـ context للوصول للـ ThemeData
-      ) {
+    PageNames thisPage,
+    PageNames selectedPage,
+    String name,
+    String icon,
+    Function onTap,
+    BuildContext context, // تمرير الـ context للوصول للـ ThemeData
+  ) {
     final theme = Theme.of(context).bottomNavigationBarTheme;
 
     return SizedBox(
@@ -416,7 +414,8 @@ class MainWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            _getIcon(icon, theme.selectedItemColor), // استدعاء الدالة لعرض الأيقونة
+            _getIcon(
+                icon, theme.selectedItemColor), // استدعاء الدالة لعرض الأيقونة
             space(8),
             AnimatedOpacity(
               duration: const Duration(milliseconds: 300),
@@ -443,8 +442,6 @@ class MainWidget {
     );
   }
 
-
-
   static Widget _getIcon(String iconPath, Color? selectedItemColor) {
     if (iconPath.endsWith('.svg')) {
       return SvgPicture.asset(
@@ -464,16 +461,16 @@ class MainWidget {
         height: 24,
       );
     } else {
-      return SizedBox(); // لو الصورة مش PNG ولا SVG
+      return const SizedBox(); // لو الصورة مش PNG ولا SVG
     }
   }
 
   static Widget homeNavItem(
-      PageNames thisPage,
-      PageNames selectedPage,
-      Function onTap,
-      BuildContext context, // تمرير الـ context للوصول للـ ThemeData
-      ) {
+    PageNames thisPage,
+    PageNames selectedPage,
+    Function onTap,
+    BuildContext context, // تمرير الـ context للوصول للـ ThemeData
+  ) {
     final theme = Theme.of(context).bottomNavigationBarTheme;
 
     return SizedBox(
@@ -516,9 +513,7 @@ class MainWidget {
                 ),
               ],
             ),
-
             space(10),
-
             AnimatedOpacity(
               duration: const Duration(milliseconds: 300),
               opacity: 1,
@@ -529,9 +524,7 @@ class MainWidget {
                 ),
               ),
             ),
-
             space(8),
-
             AnimatedCrossFade(
               firstChild: SvgPicture.asset(AppAssets.navArrowSvg),
               secondChild: const SizedBox(height: 5),
@@ -545,5 +538,4 @@ class MainWidget {
       ),
     );
   }
-
 }

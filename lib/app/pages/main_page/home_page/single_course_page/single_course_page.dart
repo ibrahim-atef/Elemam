@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 import 'dart:developer';
 
@@ -22,17 +20,15 @@ import 'package:webinar/common/data/api_public_data.dart';
 import 'package:webinar/common/data/app_data.dart';
 import 'package:webinar/common/utils/app_text.dart';
 import 'package:webinar/common/utils/constants.dart';
-import 'package:webinar/config/assets.dart';
-import 'package:webinar/config/colors.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/assets.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 import 'package:webinar/locator.dart';
 
 import '../../../../../common/utils/currency_utils.dart';
 import '../../../../models/content_model.dart';
 import '../../../../widgets/main_widget/blog_widget/blog_widget.dart';
 import '../../../../widgets/main_widget/home_widget/single_course_widget/custom_video_player.dart';
-
-
 
 class SingleCoursePage extends StatefulWidget {
   static const String pageName = '/single-course';
@@ -42,7 +38,8 @@ class SingleCoursePage extends StatefulWidget {
   State<SingleCoursePage> createState() => _SingleCoursePageState();
 }
 
-class _SingleCoursePageState extends State<SingleCoursePage> with SingleTickerProviderStateMixin{
+class _SingleCoursePageState extends State<SingleCoursePage>
+    with SingleTickerProviderStateMixin {
   var name;
   bool isLoading = true;
   bool isPrivate = false;
@@ -54,8 +51,7 @@ class _SingleCoursePageState extends State<SingleCoursePage> with SingleTickerPr
   SingleCourseModel? courseData;
 
   late TabController tabController;
-  int currentTab=0;
-
+  int currentTab = 0;
 
   bool showInformationButton = false;
   bool showContentButton = false;
@@ -65,15 +61,13 @@ class _SingleCoursePageState extends State<SingleCoursePage> with SingleTickerPr
   String token = '';
 
   ScrollController scrollController = ScrollController();
-  bool isBundleCourse=false;
-
+  bool isBundleCourse = false;
 
   List<CourseModel> bundleCourses = [];
   List<ContentModel> contentData = [];
 
   // if is not null. first show comment page
   int? commentId;
-
 
   @override
   void initState() {
@@ -82,80 +76,77 @@ class _SingleCoursePageState extends State<SingleCoursePage> with SingleTickerPr
     tabController = TabController(length: 4, vsync: this);
     getData();
 
-
     scrollController.addListener(() {
-      if(scrollController.position.pixels > 250){
-        if(currentTab == 0){ // information
-          if(!showInformationButton){
+      if (scrollController.position.pixels > 250) {
+        if (currentTab == 0) {
+          // information
+          if (!showInformationButton) {
             offAllTabs();
             setState(() {
-              showInformationButton=true;
+              showInformationButton = true;
             });
           }
         }
-
       }
     });
 
     tabController.addListener(() {
-
-      if(tabController.index == 0){ // Information
-        if(!showInformationButton){
+      if (tabController.index == 0) {
+        // Information
+        if (!showInformationButton) {
           offAllTabs();
           setState(() {
-            showInformationButton=true;
+            showInformationButton = true;
           });
         }
       }
 
-      if(tabController.index == 1){ // Content
-        if(!showContentButton){
+      if (tabController.index == 1) {
+        // Content
+        if (!showContentButton) {
           offAllTabs();
           setState(() {
-            showContentButton=true;
+            showContentButton = true;
           });
         }
       }
 
-      if(tabController.index == 2){ // Review
-        if(!canSubmitReview){
+      if (tabController.index == 2) {
+        // Review
+        if (!canSubmitReview) {
           offAllTabs();
           setState(() {
-            canSubmitReview=true;
+            canSubmitReview = true;
           });
         }
       }
 
-      if(tabController.index == 3){ // Comments
-        if(!canSubmitComment){
+      if (tabController.index == 3) {
+        // Comments
+        if (!canSubmitComment) {
           offAllTabs();
           setState(() {
-            canSubmitComment=true;
+            canSubmitComment = true;
           });
         }
       }
-
     });
   }
 
-  offAllTabs(){
-    showContentButton=false;
-    showInformationButton=false;
-    canSubmitReview=false;
-    canSubmitComment=false;
+  offAllTabs() {
+    showContentButton = false;
+    showInformationButton = false;
+    canSubmitReview = false;
+    canSubmitComment = false;
   }
 
-  onChangeTab(int i){
-
+  onChangeTab(int i) {
     setState(() {
       currentTab = i;
     });
-
   }
 
-
   getData() async {
-
     token = await AppData.getAccessToken();
     name = await AppData.getName();
 
@@ -166,31 +157,35 @@ class _SingleCoursePageState extends State<SingleCoursePage> with SingleTickerPr
     await Future.delayed(const Duration(milliseconds: 500));
 
     // ignore_for_file: use_build_context_synchronously
-    int id =  courseData?.id ?? (ModalRoute.of(context)!.settings.arguments as List)[0];
-    isBundleCourse =  courseData != null ? courseData?.type == 'bundle' : (ModalRoute.of(context)!.settings.arguments as List)[1];
+    int id = courseData?.id ??
+        (ModalRoute.of(context)!.settings.arguments as List)[0];
+    isBundleCourse = courseData != null
+        ? courseData?.type == 'bundle'
+        : (ModalRoute.of(context)!.settings.arguments as List)[1];
 
-    try{
-      commentId =  commentId ?? (ModalRoute.of(context)!.settings.arguments as List)[2];
-    }catch(_){}
+    try {
+      commentId =
+          commentId ?? (ModalRoute.of(context)!.settings.arguments as List)[2];
+    } catch (_) {}
 
-    try{
-      isPrivate =  (ModalRoute.of(context)!.settings.arguments as List)[3];
-    }catch(_){}
+    try {
+      isPrivate = (ModalRoute.of(context)!.settings.arguments as List)[3];
+    } catch (_) {}
 
     log('is Bundle: $isBundleCourse - id: $id');
 
+    courseData = await CourseService.getSingleCourseData(id, isBundleCourse,
+        isPrivate: isPrivate);
 
-    courseData = await CourseService.getSingleCourseData(id, isBundleCourse, isPrivate: isPrivate);
-
-    if(courseData != null && isBundleCourse){
+    if (courseData != null && isBundleCourse) {
       getBundleCourses();
     }
 
-    if(!isBundleCourse){
+    if (!isBundleCourse) {
       getContent();
     }
 
-    if(commentId != null){
+    if (commentId != null) {
       showComment();
     }
 
@@ -206,14 +201,10 @@ class _SingleCoursePageState extends State<SingleCoursePage> with SingleTickerPr
   }
 
   getBundleCourses() async {
-
     bundleCourses = await CourseService.bundleCourses(courseData!.id!);
 
     setState(() {});
   }
-
-
-
 
   showComment() async {
     currentTab = 3;
@@ -221,623 +212,706 @@ class _SingleCoursePageState extends State<SingleCoursePage> with SingleTickerPr
 
     Timer(const Duration(seconds: 2), () {
       for (var i = 0; i < (courseData?.comments.length ?? 0); i++) {
-
-        if(commentId == courseData?.comments[i].id){
+        if (commentId == courseData?.comments[i].id) {
           // print(courseData?.comments[i].globalKey.findWidget);
           scrollController.animateTo(
-            (courseData!.comments[i].globalKey.findWidget ?? 0.0) > 230
-            ? (courseData!.comments[i].globalKey.findWidget ?? 0.0) - 230
-            : 0,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.linearToEaseOut
-          );
+              (courseData!.comments[i].globalKey.findWidget ?? 0.0) > 230
+                  ? (courseData!.comments[i].globalKey.findWidget ?? 0.0) - 230
+                  : 0,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.linearToEaseOut);
         }
       }
 
       commentId = null;
     });
 
-
-
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-
     return directionality(
-      child: Scaffold(
-
-        appBar: appbar(
-          title: appText.courseDetails,
-          isBasket: true
-        ),
-
-        body: isLoading
-    ? loading()
-    : courseData == null
-      ? const SizedBox()
-      : Stack(
-          children: [
-
-            Positioned.fill(
-          child: (token.isEmpty && (PublicData.apiConfigData?['webinar_private_content_status'] ?? '0') == '1' )
-            ? SingleCourseWidget.privateContent()
-          : (token.isNotEmpty && (PublicData.apiConfigData?['sequence_content_status'] ?? '0') == '1' && locator<UserProvider>().profile?.accessContent == 0)
-            ? SingleCourseWidget.pendingVerification()
-            : NestedScrollView(
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                floatHeaderSlivers: false,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-
-                  return [
-
-                    // course video + title + teacher info
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: padding(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-
-                            if(courseData?.activeSpecialOffer != null)...{
-                              SpecialOfferWidget(
-                                courseData?.activeSpecialOffer?.toDate ?? 0,
-                                courseData?.activeSpecialOffer?.percent?.toString() ?? '0'
-                              ),
-                            },
-
-                            space(14),
-
-                            // title
-                            Text(
-                              courseData?.title ?? '',
-                              style: style16Bold(),
-                            ),
-
-                            space(8),
-
-                            // rate
-                            Row(
-                              children: [
-
-                                ratingBar(courseData?.rate?.toString() ?? '0'),
-
-                                space(0,width: 4),
-
-                                Container(
-                                  padding: padding(horizontal: 6,vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: greyE7,
-                                    borderRadius: borderRadius()
-                                  ),
-
-                                  child: Text(
-                                    courseData?.reviewsCount?.toString() ?? '',
-                                    style: style10Regular().copyWith(color: greyB2),
-                                  ),
-                                )
-
-                              ],
-                            ),
-
-                            space(18),
-
-
-                            if(courseData?.videoDemo != null)...{
-                              if(courseData?.videoDemoSource == 'youtube' || courseData?.videoDemoSource == 'vimeo')...{
-                                Directionality(textDirection: TextDirection.ltr, child:                                 PodVideoPlayerDev(
-                                  courseData?.videoDemo ?? '',
-                                  courseData?.videoDemoSource ?? '',
-                                  Constants.singleCourseRouteObserver, name: name,
-                                ),
-                                ),
-
-
-                              }else...{
-                                CourseVideoPlayer(courseData?.videoDemo ?? '', courseData?.imageCover ?? '', Constants.singleCourseRouteObserver, name: name,)
-                              }
-
-                            }else ...{
-
-                              ClipRRect(
-                                borderRadius: borderRadius(),
-                                child: fadeInImage(courseData?.image ?? '', getSize().width, 210),
-                              )
-                            },
-
-                            space(24),
-
-                            // teacher profile
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-
-                                userProfile(courseData!.teacher!,showRate: true),
-
-                                closeButton(AppAssets.menuCircleSvg,icColor: greyB2, onTap: (){
-                                  SingleCourseWidget.showOptionsDialog(courseData!, token, isBundle: isBundleCourse);
-                                }),
-
-                              ],
-                            ),
-
-                            if((courseData?.authHasBought == false) && (courseData?.cashbackRules.isNotEmpty ?? false))...{
-                              space(16),
-
-                              helperBox(
-                                AppAssets.walletSvg,
-                                appText.getCashback,
-                                '${isBundleCourse ? appText.purchaseThisProductAndGet : appText.purchaseThisCourseAndGet}${courseData?.cashbackRules.first.amountType == 'percent' ? '%${courseData!.cashbackRules.first.amount ?? 0}' : CurrencyUtils.calculator(courseData!.cashbackRules.first.amount ?? 0)} ${appText.cashback}',
-                                horizontalPadding: 0
-                              ),
-                            }
-
-
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // tabs
-                    SliverAppBar(
-                      pinned: true,
-
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      shadowColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(.2),
-                      elevation: 10,
-                      titleSpacing: 0,
-
-                      title: tabBar(onChangeTab, tabController, [
-
-                        Tab(
-                          text: appText.information,
-                          height: 32,
-                        ),
-
-                        Tab(
-                          text: appText.content,
-                          height: 32,
-                        ),
-
-                        Tab(
-                          text: appText.reviews,
-                          height: 32,
-                        ),
-
-                        Tab(
-                          text: appText.comments,
-                          height: 32,
-                        ),
-
-                      ]),
-                    ),
-
-                  ];
-                },
-
-
-                body: TabBarView(
-                  physics: const BouncingScrollPhysics(),
-                  controller: tabController,
-
-                  children: [
-
-                    // information page
-                    SingleCourseWidget.informationPage(
-                      courseData!,
-                      viewMore,
-                      (){
-                        setState(() {
-                          viewMore = !viewMore;
-                        });
-                      },
-                      () => setState(() {}),
-                      bundleCourses: bundleCourses
-                    ),
-
-                    // content page
-                    SingleCourseWidget.contentPage(
-                      courseData!,
-                      contentData,
-                      bundleCourses: bundleCourses
-                    ),
-
-                    // reviews page
-                    SingleCourseWidget.reviewsPage(
-                      courseData!,
-                    ),
-
-                    // comments page
-                    SingleCourseWidget.commentsPage(
-                      courseData!,
-                    ),
-                  ]
-                ),
-
-              ),
-            ),
-
-
-            if((token.isEmpty && (PublicData.apiConfigData?['webinar_private_content_status'] ?? '0') == '1' ))...{
-              // login buttons
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 350),
-                bottom: 0,
-                child: Container(
-                  width: getSize().width,
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                    bottom: 30
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      boxShadow(Colors.black.withOpacity(.1),blur: 15,y: -3)
-                    ],
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(30))
-                  ),
-                  child: button(
-                    onTap: () async {
-                      nextRoute(LoginPage.pageName, isClearBackRoutes: true);
-                    },
-                    width: getSize().width,
-                    height: 52,
-                    text: appText.login,
-                    bgColor: mainColor(),
-                    textColor: Colors.white
-                  ),
-                )
-              ),
-
-            }else...{
-
-              // information buttons
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 350),
-                bottom: showInformationButton ? 0 : -150,
-                child: Container(
-                  width: getSize().width,
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                    bottom: 30
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      boxShadow(Colors.black.withOpacity(.1), blur: 15, y: -3)
-                    ],
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(30))
-                  ),
-                  child: Column(
-                    children: [
-
-                      // price or percent
-                      if((courseData?.authHasBought == false))...{
-
-                        if(token.isNotEmpty)...{
-
-                          Row(
-                            children: [
-
-                              Text(
-                                appText.price,
-                                style: style14Regular().copyWith(color: greyA5),
-                              ),
-
-
-                              const Spacer(),
-
-                              Text(
-                                ((courseData?.price ?? 0) == 0)
-                                  ? appText.free
-                                  : CurrencyUtils.calculator(courseData!.price ?? 0),
-                                style: style12Regular().copyWith(
-                                  color: (courseData!.discountPercent ?? 0) > 0 ? greyCF : mainColor(),
-                                  decoration: (courseData!.discountPercent ?? 0) > 0 ? TextDecoration.lineThrough : TextDecoration.none,
-                                  decorationColor: (courseData!.discountPercent ?? 0) > 0 ? greyCF : mainColor(),
-                                ),
-                              ),
-
-                              if((courseData!.discountPercent ?? 0) > 0)...{
-                                space(0,width: 8),
-
-                                Text(
-                                  CurrencyUtils.calculator(
-                                    (courseData!.price ?? 0) - ((courseData!.price ?? 0) * (courseData!.discountPercent ?? 0) ~/ 100)
-                                  ),
-                                  style: style14Regular().copyWith(
-                                    color: mainColor(),
-                                  ),
-                                ),
-                              },
-
-                            ],
+        child: Scaffold(
+            appBar: appbar(title: appText.courseDetails, isBasket: true),
+            body: isLoading
+                ? loading()
+                : courseData == null
+                    ? const SizedBox()
+                    : Stack(
+                        children: [
+                          Positioned.fill(
+                            child: (token.isEmpty &&
+                                    (PublicData.apiConfigData?[
+                                                'webinar_private_content_status'] ??
+                                            '0') ==
+                                        '1')
+                                ? SingleCourseWidget.privateContent()
+                                : (token.isNotEmpty &&
+                                        (PublicData.apiConfigData?[
+                                                    'sequence_content_status'] ??
+                                                '0') ==
+                                            '1' &&
+                                        locator<UserProvider>()
+                                                .profile
+                                                ?.accessContent ==
+                                            0)
+                                    ? SingleCourseWidget.pendingVerification()
+                                    : NestedScrollView(
+                                        controller: scrollController,
+                                        physics: const BouncingScrollPhysics(),
+                                        floatHeaderSlivers: false,
+                                        headerSliverBuilder:
+                                            (context, innerBoxIsScrolled) {
+                                          return [
+                                            // course video + title + teacher info
+                                            SliverToBoxAdapter(
+                                              child: Padding(
+                                                padding: padding(),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    if (courseData
+                                                            ?.activeSpecialOffer !=
+                                                        null) ...{
+                                                      SpecialOfferWidget(
+                                                          courseData
+                                                                  ?.activeSpecialOffer
+                                                                  ?.toDate ??
+                                                              0,
+                                                          courseData
+                                                                  ?.activeSpecialOffer
+                                                                  ?.percent
+                                                                  ?.toString() ??
+                                                              '0'),
+                                                    },
+
+                                                    space(14),
+
+                                                    // title
+                                                    Text(
+                                                      courseData?.title ?? '',
+                                                      style: style16Bold(),
+                                                    ),
+
+                                                    space(8),
+
+                                                    // rate
+                                                    Row(
+                                                      children: [
+                                                        ratingBar(courseData
+                                                                ?.rate
+                                                                ?.toString() ??
+                                                            '0'),
+                                                        space(0, width: 4),
+                                                        Container(
+                                                          padding: padding(
+                                                              horizontal: 6,
+                                                              vertical: 3),
+                                                          decoration: BoxDecoration(
+                                                              color: greyE7,
+                                                              borderRadius:
+                                                                  borderRadius()),
+                                                          child: Text(
+                                                            courseData
+                                                                    ?.reviewsCount
+                                                                    ?.toString() ??
+                                                                '',
+                                                            style: style10Regular()
+                                                                .copyWith(
+                                                                    color:
+                                                                        greyB2),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+
+                                                    space(18),
+
+                                                    if (courseData?.videoDemo !=
+                                                        null) ...{
+                                                      if (courseData
+                                                                  ?.videoDemoSource ==
+                                                              'youtube' ||
+                                                          courseData
+                                                                  ?.videoDemoSource ==
+                                                              'vimeo') ...{
+                                                        Directionality(
+                                                          textDirection:
+                                                              TextDirection.ltr,
+                                                          child:
+                                                              PodVideoPlayerDev(
+                                                            courseData
+                                                                    ?.videoDemo ??
+                                                                '',
+                                                            courseData
+                                                                    ?.videoDemoSource ??
+                                                                '',
+                                                            Constants
+                                                                .singleCourseRouteObserver,
+                                                            name: name,
+                                                          ),
+                                                        ),
+                                                      } else ...{
+                                                        CourseVideoPlayer(
+                                                          courseData
+                                                                  ?.videoDemo ??
+                                                              '',
+                                                          courseData
+                                                                  ?.imageCover ??
+                                                              '',
+                                                          Constants
+                                                              .singleCourseRouteObserver,
+                                                          name: name,
+                                                        )
+                                                      }
+                                                    } else ...{
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            borderRadius(),
+                                                        child: fadeInImage(
+                                                            courseData?.image ??
+                                                                '',
+                                                            getSize().width,
+                                                            210),
+                                                      )
+                                                    },
+
+                                                    space(24),
+
+                                                    // teacher profile
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        userProfile(
+                                                            courseData!
+                                                                .teacher!,
+                                                            showRate: true),
+                                                        closeButton(
+                                                            AppAssets
+                                                                .menuCircleSvg,
+                                                            icColor: greyB2,
+                                                            onTap: () {
+                                                          SingleCourseWidget
+                                                              .showOptionsDialog(
+                                                                  courseData!,
+                                                                  token,
+                                                                  isBundle:
+                                                                      isBundleCourse);
+                                                        }),
+                                                      ],
+                                                    ),
+
+                                                    if ((courseData
+                                                                ?.authHasBought ==
+                                                            false) &&
+                                                        (courseData
+                                                                ?.cashbackRules
+                                                                .isNotEmpty ??
+                                                            false)) ...{
+                                                      space(16),
+                                                      helperBox(
+                                                          AppAssets.walletSvg,
+                                                          appText.getCashback,
+                                                          '${isBundleCourse ? appText.purchaseThisProductAndGet : appText.purchaseThisCourseAndGet}${courseData?.cashbackRules.first.amountType == 'percent' ? '%${courseData!.cashbackRules.first.amount ?? 0}' : CurrencyUtils.calculator(courseData!.cashbackRules.first.amount ?? 0)} ${appText.cashback}',
+                                                          horizontalPadding: 0),
+                                                    }
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+
+                                            // tabs
+                                            SliverAppBar(
+                                              pinned: true,
+                                              centerTitle: true,
+                                              automaticallyImplyLeading: false,
+                                              backgroundColor: Theme.of(context)
+                                                  .scaffoldBackgroundColor,
+                                              shadowColor: Theme.of(context)
+                                                  .scaffoldBackgroundColor
+                                                  .withOpacity(.2),
+                                              elevation: 10,
+                                              titleSpacing: 0,
+                                              title: tabBar(
+                                                  onChangeTab, tabController, [
+                                                Tab(
+                                                  text: appText.information,
+                                                  height: 32,
+                                                ),
+                                                Tab(
+                                                  text: appText.content,
+                                                  height: 32,
+                                                ),
+                                                Tab(
+                                                  text: appText.reviews,
+                                                  height: 32,
+                                                ),
+                                                Tab(
+                                                  text: appText.comments,
+                                                  height: 32,
+                                                ),
+                                              ]),
+                                            ),
+                                          ];
+                                        },
+                                        body: TabBarView(
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            controller: tabController,
+                                            children: [
+                                              // information page
+                                              SingleCourseWidget
+                                                  .informationPage(
+                                                      courseData!, viewMore,
+                                                      () {
+                                                setState(() {
+                                                  viewMore = !viewMore;
+                                                });
+                                              }, () => setState(() {}),
+                                                      bundleCourses:
+                                                          bundleCourses),
+
+                                              // content page
+                                              SingleCourseWidget.contentPage(
+                                                  courseData!, contentData,
+                                                  bundleCourses: bundleCourses),
+
+                                              // reviews page
+                                              SingleCourseWidget.reviewsPage(
+                                                courseData!,
+                                              ),
+
+                                              // comments page
+                                              SingleCourseWidget.commentsPage(
+                                                courseData!,
+                                              ),
+                                            ]),
+                                      ),
                           ),
+                          if ((token.isEmpty &&
+                              (PublicData.apiConfigData?[
+                                          'webinar_private_content_status'] ??
+                                      '0') ==
+                                  '1')) ...{
+                            // login buttons
+                            AnimatedPositioned(
+                                duration: const Duration(milliseconds: 350),
+                                bottom: 0,
+                                child: Container(
+                                  width: getSize().width,
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20, top: 20, bottom: 30),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        boxShadow(Colors.black.withOpacity(.1),
+                                            blur: 15, y: -3)
+                                      ],
+                                      borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(30))),
+                                  child: button(
+                                      onTap: () async {
+                                        nextRoute(LoginPage.pageName,
+                                            isClearBackRoutes: true);
+                                      },
+                                      width: getSize().width,
+                                      height: 52,
+                                      text: appText.login,
+                                      bgColor: mainColor(),
+                                      textColor: Colors.white),
+                                )),
+                          } else ...{
+                            // information buttons
+                            AnimatedPositioned(
+                                duration: const Duration(milliseconds: 350),
+                                bottom: showInformationButton ? 0 : -150,
+                                child: Container(
+                                    width: getSize().width,
+                                    padding: const EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                        top: 20,
+                                        bottom: 30),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          boxShadow(
+                                              Colors.black.withOpacity(.1),
+                                              blur: 15,
+                                              y: -3)
+                                        ],
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(30))),
+                                    child: Column(
+                                      children: [
+                                        // price or percent
+                                        if ((courseData?.authHasBought ==
+                                            false)) ...{
+                                          if (token.isNotEmpty) ...{
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  appText.price,
+                                                  style: style14Regular()
+                                                      .copyWith(color: greyA5),
+                                                ),
+                                                const Spacer(),
+                                                Text(
+                                                  ((courseData?.price ?? 0) ==
+                                                          0)
+                                                      ? appText.free
+                                                      : CurrencyUtils
+                                                          .calculator(
+                                                              courseData!
+                                                                      .price ??
+                                                                  0),
+                                                  style:
+                                                      style12Regular().copyWith(
+                                                    color:
+                                                        (courseData!.discountPercent ??
+                                                                    0) >
+                                                                0
+                                                            ? greyCF
+                                                            : mainColor(),
+                                                    decoration: (courseData!
+                                                                    .discountPercent ??
+                                                                0) >
+                                                            0
+                                                        ? TextDecoration
+                                                            .lineThrough
+                                                        : TextDecoration.none,
+                                                    decorationColor:
+                                                        (courseData!.discountPercent ??
+                                                                    0) >
+                                                                0
+                                                            ? greyCF
+                                                            : mainColor(),
+                                                  ),
+                                                ),
+                                                if ((courseData!
+                                                            .discountPercent ??
+                                                        0) >
+                                                    0) ...{
+                                                  space(0, width: 8),
+                                                  Text(
+                                                    CurrencyUtils.calculator(
+                                                        (courseData!.price ??
+                                                                0) -
+                                                            ((courseData!
+                                                                        .price ??
+                                                                    0) *
+                                                                (courseData!
+                                                                        .discountPercent ??
+                                                                    0) ~/
+                                                                100)),
+                                                    style: style14Regular()
+                                                        .copyWith(
+                                                      color: mainColor(),
+                                                    ),
+                                                  ),
+                                                },
+                                              ],
+                                            ),
+                                            space(16),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                    child: button(
+                                                        onTap: () async {
+                                                          if (((courseData
+                                                                      ?.price ??
+                                                                  0) ==
+                                                              0)) {
+                                                            setState(() {
+                                                              isEnrollLoading =
+                                                                  true;
+                                                            });
 
-                          space(16),
+                                                            bool res = isBundleCourse
+                                                                ? await PurchaseService
+                                                                    .bundlesFree(
+                                                                        courseData!
+                                                                            .id!)
+                                                                : await PurchaseService
+                                                                    .courseFree(
+                                                                        courseData!
+                                                                            .id!);
 
-                          Row(
-                            children: [
+                                                            if (res) {
+                                                              getData();
+                                                            }
 
-                              Expanded(
-                                child: button(
-                                  onTap: () async {
+                                                            setState(() {
+                                                              isEnrollLoading =
+                                                                  false;
+                                                            });
 
-                                    if(((courseData?.price ?? 0) == 0)){
+                                                            return;
+                                                          }
 
-                                      setState(() {
-                                        isEnrollLoading = true;
-                                      });
+                                                          if (courseData!
+                                                                  .tickets
+                                                                  .isNotEmpty ||
+                                                              (courseData!.points !=
+                                                                      null &&
+                                                                  courseData!
+                                                                          .points !=
+                                                                      0)) {
+                                                            SingleCourseWidget
+                                                                    .pricingPlanDialog(
+                                                                        courseData!)
+                                                                .then((value) {
+                                                              if (value !=
+                                                                      null &&
+                                                                  value) {
+                                                                courseData =
+                                                                    null;
+                                                                getData();
+                                                              }
+                                                            });
+                                                            return;
+                                                          } else {
+                                                            setState(() {
+                                                              isEnrollLoading =
+                                                                  true;
+                                                            });
 
+                                                            await CartService.add(
+                                                                courseData?.id
+                                                                        ?.toString() ??
+                                                                    '',
+                                                                isBundleCourse
+                                                                    ? 'bundle'
+                                                                    : 'webinar',
+                                                                '');
 
-                                      bool res = isBundleCourse
-                                        ? await PurchaseService.bundlesFree(courseData!.id!)
-                                        : await PurchaseService.courseFree(courseData!.id!);
+                                                            setState(() {
+                                                              isEnrollLoading =
+                                                                  false;
+                                                            });
+                                                          }
+                                                        },
+                                                        width: getSize().width,
+                                                        height: 52,
+                                                        text: appText
+                                                            .enrollOnClass,
+                                                        bgColor: mainColor(),
+                                                        textColor: Colors.white,
+                                                        isLoading:
+                                                            isEnrollLoading)),
+                                                if (courseData?.subscribe ??
+                                                    false) ...{
+                                                  space(0, width: 16),
+                                                  Expanded(
+                                                      child: button(
+                                                          onTap: () async {
+                                                            setState(() {
+                                                              isSubscribeLoading =
+                                                                  true;
+                                                            });
 
-                                      if(res){
-                                        getData();
-                                      }
+                                                            bool res = await CartService
+                                                                .subscribeApplay(
+                                                                    courseData!
+                                                                        .id!);
 
-                                      setState(() {
-                                        isEnrollLoading = false;
-                                      });
+                                                            if (res) {
+                                                              getData();
+                                                            }
 
-                                      return;
+                                                            setState(() {
+                                                              isSubscribeLoading =
+                                                                  false;
+                                                            });
+                                                          },
+                                                          width:
+                                                              getSize().width,
+                                                          height: 52,
+                                                          text:
+                                                              appText.subscribe,
+                                                          bgColor: Colors
+                                                              .transparent,
+                                                          textColor:
+                                                              mainColor(),
+                                                          borderColor:
+                                                              mainColor(),
+                                                          isLoading:
+                                                              isSubscribeLoading,
+                                                          loadingColor:
+                                                              mainColor())),
+                                                }
+                                              ],
+                                            )
+                                          } else ...{
+                                            button(
+                                                onTap: () {
+                                                  nextRoute(LoginPage.pageName,
+                                                      isClearBackRoutes: true);
+                                                },
+                                                width: getSize().width,
+                                                height: 53,
+                                                text: appText.login,
+                                                bgColor: mainColor(),
+                                                textColor: Colors.white),
+                                          }
+                                        } else ...{
+                                          // progress
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${courseData?.progressPercent ?? 0}% ${appText.completed}',
+                                                style: style10Regular()
+                                                    .copyWith(color: greyA5),
+                                              ),
+                                              space(6),
+                                              LayoutBuilder(
+                                                builder:
+                                                    (context, constraints) {
+                                                  return Container(
+                                                    width: constraints.maxWidth,
+                                                    height: 4,
+                                                    alignment:
+                                                        AlignmentDirectional
+                                                            .centerStart,
+                                                    child: Container(
+                                                      width: ((courseData
+                                                                      ?.progressPercent ??
+                                                                  0) >
+                                                              0)
+                                                          ? constraints
+                                                                  .maxWidth *
+                                                              ((courseData?.progressPercent ??
+                                                                      0) /
+                                                                  100)
+                                                          : 5,
+                                                      height: 4,
+                                                      decoration: BoxDecoration(
+                                                        color: mainColor(),
+                                                        borderRadius:
+                                                            borderRadius(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              space(12),
+                                              button(
+                                                  onTap: () {
+                                                    if (courseData?.type ==
+                                                        'bundle') {
+                                                      tabController
+                                                          .animateTo(1);
+                                                    } else {
+                                                      nextRoute(
+                                                          LearningPage.pageName,
+                                                          arguments:
+                                                              courseData);
+                                                    }
+                                                  },
+                                                  width: getSize().width,
+                                                  height: 52,
+                                                  text:
+                                                      appText.goToLearningPage,
+                                                  bgColor: mainColor(),
+                                                  textColor: Colors.white,
+                                                  raduis: 15)
+                                            ],
+                                          ),
+                                        },
+                                      ],
+                                    ))),
 
-                                    }
+                            if ((courseData?.authHasBought ?? false)) ...{
+                              // write a review
+                              AnimatedPositioned(
+                                  duration: const Duration(milliseconds: 350),
+                                  bottom: canSubmitReview ? 0 : -150,
+                                  child: Container(
+                                    width: getSize().width,
+                                    padding: const EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                        top: 20,
+                                        bottom: 30),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          boxShadow(
+                                              Colors.black.withOpacity(.1),
+                                              blur: 15,
+                                              y: -3)
+                                        ],
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(30))),
+                                    child: button(
+                                        onTap: () async {
+                                          bool? res = await SingleCourseWidget
+                                              .showSetReviewDialog(courseData!);
 
-                                    if(courseData!.tickets.isNotEmpty || (courseData!.points != null && courseData!.points != 0)){
+                                          if (res != null && res) {
+                                            getData();
+                                          }
+                                        },
+                                        width: getSize().width,
+                                        height: 52,
+                                        text: appText.writeReview,
+                                        bgColor: mainColor(),
+                                        textColor: Colors.white),
+                                  )),
+                            },
 
-                                      SingleCourseWidget.pricingPlanDialog(courseData!).then((value) {
-                                        if(value != null && value){
-                                          courseData = null;
+                            // leave a comment
+                            AnimatedPositioned(
+                                duration: const Duration(milliseconds: 350),
+                                bottom: canSubmitComment ? 0 : -150,
+                                child: Container(
+                                  width: getSize().width,
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20, top: 20, bottom: 30),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        boxShadow(Colors.black.withOpacity(.1),
+                                            blur: 15, y: -3)
+                                      ],
+                                      borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(30))),
+                                  child: button(
+                                      onTap: () async {
+                                        bool? res =
+                                            await BlogWidget.showReplayDialog(
+                                                courseData!.id!, null,
+                                                itemName: isBundleCourse
+                                                    ? 'bundle'
+                                                    : 'webinar');
+
+                                        if (res != null && res) {
                                           getData();
                                         }
-                                      });
-                                      return;
-
-                                    }else{
-
-                                      setState(() {
-                                        isEnrollLoading = true;
-                                      });
-
-                                      await CartService.add(
-                                        courseData?.id?.toString() ?? '',
-                                        isBundleCourse ? 'bundle' : 'webinar',
-                                        ''
-                                      );
-
-                                      setState(() {
-                                        isEnrollLoading = false;
-                                      });
-                                    }
-                                  },
-                                  width: getSize().width,
-                                  height: 52,
-                                  text: appText.enrollOnClass,
-                                  bgColor: mainColor(),
-                                  textColor: Colors.white,
-                                  isLoading: isEnrollLoading
-                                )
-                              ),
-
-                              if(courseData?.subscribe ?? false)...{
-                                space(0, width: 16),
-
-                                Expanded(
-                                  child: button(
-                                    onTap: () async {
-                                      setState(() {
-                                        isSubscribeLoading = true;
-                                      });
-
-                                      bool res = await CartService.subscribeApplay(courseData!.id!);
-
-                                      if(res){
-                                        getData();
-                                      }
-
-                                      setState(() {
-                                        isSubscribeLoading = false;
-                                      });
-                                    },
-                                    width: getSize().width,
-                                    height: 52,
-                                    text: appText.subscribe,
-                                    bgColor: Colors.transparent,
-                                    textColor: mainColor(),
-                                    borderColor: mainColor(),
-                                    isLoading: isSubscribeLoading,
-                                    loadingColor: mainColor()
-                                  )
-                                ),
-                              }
-
-
-                            ],
-                          )
-
-                        }else...{
-                          button(
-                            onTap: (){
-                              nextRoute(LoginPage.pageName, isClearBackRoutes: true);
-                            },
-                            width: getSize().width,
-                            height: 53,
-                            text: appText.login,
-                            bgColor: mainColor(),
-                            textColor: Colors.white
-                          ),
-                        }
-
-                      }else...{
-
-                        // progress
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-
-                            Text(
-                              '${courseData?.progressPercent ?? 0}% ${appText.completed}',
-                              style: style10Regular().copyWith(color: greyA5),
-                            ),
-
-                            space(6),
-
-                            LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Container(
-                                  width: constraints.maxWidth,
-                                  height: 4,
-                                  alignment: AlignmentDirectional.centerStart,
-                                  child: Container(
-                                    width: ((courseData?.progressPercent ?? 0) > 0)
-                                      ? constraints.maxWidth * ((courseData?.progressPercent ?? 0) / 100)
-                                      : 5,
-
-                                    height: 4,
-                                    decoration: BoxDecoration(
-                                      color: mainColor(),
-                                      borderRadius: borderRadius(),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-
-
-                            space(12),
-
-                            button(
-                              onTap: (){
-                                if(courseData?.type == 'bundle'){
-                                  tabController.animateTo(1);
-                                }else{
-                                  nextRoute(LearningPage.pageName, arguments: courseData);
-                                }
-                              },
-                              width: getSize().width,
-                              height: 52,
-                              text: appText.goToLearningPage,
-                              bgColor: mainColor(),
-                              textColor: Colors.white,
-                              raduis: 15
-                            )
-
-                          ],
-                        ),
-
-                      },
-
-
-                    ],
-                  )
-                )
-              ),
-
-              if((courseData?.authHasBought ?? false))...{
-                // write a review
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 350),
-                  bottom: canSubmitReview ? 0 : -150,
-                  child: Container(
-                    width: getSize().width,
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: 20,
-                      bottom: 30
-                    ),
-
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        boxShadow(Colors.black.withOpacity(.1),blur: 15,y: -3)
-                      ],
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(30))
-                    ),
-                    child: button(
-                      onTap: () async {
-                        bool? res = await SingleCourseWidget.showSetReviewDialog(courseData!);
-
-                        if(res != null && res){
-                          getData();
-                        }
-                      },
-                      width: getSize().width,
-                      height: 52,
-                      text: appText.writeReview,
-                      bgColor: mainColor(),
-                      textColor: Colors.white
-                    ),
-                  )
-                ),
-
-              },
-
-              // leave a comment
-              AnimatedPositioned(
-                duration: const Duration(milliseconds: 350),
-                bottom: canSubmitComment ? 0 : -150,
-                child: Container(
-                  width: getSize().width,
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                    bottom: 30
-                  ),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      boxShadow(Colors.black.withOpacity(.1),blur: 15,y: -3)
-                    ],
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(30))
-                  ),
-                  child: button(
-                    onTap: () async {
-                      bool? res = await BlogWidget.showReplayDialog(courseData!.id!, null, itemName: isBundleCourse ? 'bundle' : 'webinar');
-
-                      if(res != null && res){
-                        getData();
-                      }
-                    },
-                    width: getSize().width,
-                    height: 52,
-                    text: appText.leaveAComment,
-                    bgColor: mainColor(),
-                    textColor: Colors.white
-                  ),
-                )
-              ),
-
-
-            }
-
-
-          ],
-        )
-      )
-    );
+                                      },
+                                      width: getSize().width,
+                                      height: 52,
+                                      text: appText.leaveAComment,
+                                      bgColor: mainColor(),
+                                      textColor: Colors.white),
+                                )),
+                          }
+                        ],
+                      )));
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-
 }
 
 extension GlobalKeyExtension on GlobalKey {

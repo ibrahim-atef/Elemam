@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webinar/common/utils/app_text.dart';
-import 'package:webinar/config/colors.dart';
-import 'package:webinar/config/styles.dart';
+import 'package:webinar/common/config/colors.dart';
+import 'package:webinar/common/config/styles.dart';
 
 class ContactUsWidget {
   static Widget offlineSection() {
@@ -53,20 +53,21 @@ class ContactUsWidget {
                 style: style20Bold().copyWith(color: white()),
               ),
 
-               const SizedBox(width: 10),
-    IconButton(
-      icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
-      onPressed: () async {
-        final phone = '01222912524'; // رقم الهاتف مع رمز الدولة بدون +
-        final url = Uri.parse('https://wa.me/$phone');
-        if (await canLaunchUrl(url)) {
-          await launchUrl(url, mode: LaunchMode.externalApplication);
-        } else {
-          // يمكنك عرض رسالة خطأ هنا
-        }
-      },
-    ),
-
+              const SizedBox(width: 10),
+              IconButton(
+                icon: const FaIcon(FontAwesomeIcons.whatsapp,
+                    color: Colors.green),
+                onPressed: () async {
+                  final phone =
+                      '01222912524'; // رقم الهاتف مع رمز الدولة بدون +
+                  final url = Uri.parse('https://wa.me/$phone');
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  } else {
+                    // يمكنك عرض رسالة خطأ هنا
+                  }
+                },
+              ),
             ],
           ),
         ],
@@ -121,22 +122,21 @@ class ContactUsWidget {
                 style: style20Bold().copyWith(color: white()),
               ),
 
-
- const SizedBox(width: 10),
-    IconButton(
-      icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
-      onPressed: () async {
-        final phone = '201016317083'; // رقم الهاتف مع رمز الدولة بدون +
-        final url = Uri.parse('https://wa.me/$phone');
-        if (await canLaunchUrl(url)) {
-          await launchUrl(url, mode: LaunchMode.externalApplication);
-        } else {
-          // يمكنك عرض رسالة خطأ هنا
-        }
-      },
-    ),
-
-
+              const SizedBox(width: 10),
+              IconButton(
+                icon: const FaIcon(FontAwesomeIcons.whatsapp,
+                    color: Colors.green),
+                onPressed: () async {
+                  final phone =
+                      '201016317083'; // رقم الهاتف مع رمز الدولة بدون +
+                  final url = Uri.parse('https://wa.me/$phone');
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  } else {
+                    // يمكنك عرض رسالة خطأ هنا
+                  }
+                },
+              ),
             ],
           ),
         ],
@@ -185,21 +185,19 @@ class ContactUsWidget {
               color: white(),
             ),
           ),
-
-                         const SizedBox(width: 10),
-    IconButton(
-      icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
-      onPressed: () async {
-        final phone = '01555067049'; // رقم الهاتف مع رمز الدولة بدون +
-        final url = Uri.parse('https://wa.me/$phone');
-        if (await canLaunchUrl(url)) {
-          await launchUrl(url, mode: LaunchMode.externalApplication);
-        } else {
-          // يمكنك عرض رسالة خطأ هنا
-        }
-      },
-    ),
-
+          const SizedBox(width: 10),
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.green),
+            onPressed: () async {
+              final phone = '01555067049'; // رقم الهاتف مع رمز الدولة بدون +
+              final url = Uri.parse('https://wa.me/$phone');
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              } else {
+                // يمكنك عرض رسالة خطأ هنا
+              }
+            },
+          ),
         ],
       ),
     );

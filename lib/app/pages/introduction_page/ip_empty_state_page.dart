@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webinar/common/common.dart';
-import 'package:webinar/config/styles.dart';
-
+import 'package:webinar/common/config/styles.dart';
 
 bool isNavigatedIpPage = false;
 
@@ -14,7 +13,6 @@ class IpEmptyStatePage extends StatefulWidget {
 }
 
 class _IpEmptyStatePageState extends State<IpEmptyStatePage> {
-
   Map? data;
 
   @override
@@ -28,37 +26,31 @@ class _IpEmptyStatePageState extends State<IpEmptyStatePage> {
       setState(() {});
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return directionality(
-      child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            
-            space(0,width: getSize().width),
-
-            fadeInImage(data?['image'] ?? '', getSize().width * .5, getSize().width * .5),
-            
-            space(20),
-
-            Text(
-              data?['title'] ?? '',
-              style: style12Bold().copyWith(fontSize: 18),
-            ),
-
-            space(10),
-
-            Text(
-              data?['description'] ?? '',
-              style: style14Regular(),
-            ),
-          ],
-        ),
-      )
-    );
+        child: Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          space(0, width: getSize().width),
+          fadeInImage(
+              data?['image'] ?? '', getSize().width * .5, getSize().width * .5),
+          space(20),
+          Text(
+            data?['title'] ?? '',
+            style: style12Bold().copyWith(fontSize: 18),
+          ),
+          space(10),
+          Text(
+            data?['description'] ?? '',
+            style: style14Regular(),
+          ),
+        ],
+      ),
+    ));
   }
-
 
   @override
   void dispose() {

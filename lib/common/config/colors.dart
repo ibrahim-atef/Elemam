@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../app/providers/theme_provider.dart';
-import '../locator.dart';
+import 'package:webinar/app/providers/theme_provider.dart';
+import 'package:webinar/locator.dart';
 
 late bool isDarkMode;
 
 /// Main Color
 Color mainColor() => const Color(0xFFcea959); // Main Color
-Color white() =>
-    locator<ThemeProvider>().isDarkMode ? const Color(0xffFFFFFF) : Colors.black; // Second Color
+Color white() => locator<ThemeProvider>().isDarkMode
+    ? const Color(0xffFFFFFF)
+    : Colors.black; // Second Color
 Color gold() => const Color(0xffCC9245);
 
 /// Button

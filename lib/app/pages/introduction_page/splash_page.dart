@@ -12,8 +12,8 @@
 // import 'package:webinar/common/common.dart';
 // import 'package:webinar/common/data/app_data.dart';
 // import 'package:webinar/common/utils/app_text.dart';
-// import 'package:webinar/config/assets.dart';
-// import 'package:webinar/config/styles.dart';
+// import 'package:webinar/common/config/assets.dart';
+// import 'package:webinar/common/config/styles.dart';
 //
 // class SplashPage extends StatefulWidget {
 //   static const String pageName = '/splash';
