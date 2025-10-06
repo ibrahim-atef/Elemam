@@ -50,6 +50,9 @@ subprojects {
             if (details.requested.group == 'com.android.support' && !details.requested.name.contains('multidex') ) {
                 details.useVersion "27.1.1"
             }
+            if (details.requested.group == 'com.android.tools' && details.requested.name == 'desugar_jdk_libs') {
+                details.useVersion "2.1.4"
+            }
         }
     }
 }
