@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
@@ -558,7 +560,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                     if (res != null) {
                                       if (res['step'] == 'stored' ||
-                                          res['step'] == 'go_step_2') {
+                                          res['step'] == 'go_step_2' &&
+                                              accountType !=
+                                                  PublicData.userRole) {
                                         nextRoute(VerifyCodePage.pageName,
                                             arguments: {
                                               'user_id': res['user_id'],
@@ -571,6 +575,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                                   retypePasswordController.text
                                                       .trim(),
                                             });
+                                      } else if (res['step'] == 'stored' ||
+                                          res['step'] == 'go_step_2' &&
+                                              accountType ==
+                                                  PublicData.userRole) {
+                                        locator<PageProvider>()
+                                            .setPage(PageNames.home);
+                                        nextRoute(MainPage.pageName,
+                                            arguments: res['user_id']);
                                       } else if (res['step'] == 'go_step_3') {
                                         nextRoute(MainPage.pageName,
                                             arguments: res['user_id']);
@@ -590,7 +602,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                             accountType,
                                             registerConfig?.formFields?.fields);
 
-                                    if (res != null) {
+                                    if (res != null &&
+                                        accountType != PublicData.userRole) {
                                       if (res['step'] == 'stored' ||
                                           res['step'] == 'go_step_2') {
                                         nextRoute(VerifyCodePage.pageName,
